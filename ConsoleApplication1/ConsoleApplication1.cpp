@@ -23,7 +23,7 @@ static void myInit()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-7.0, 7.0, -7.0, 7.0, -7.0, 7.0);          // set viewing volume to 7 X 7 X 7
+	glOrtho(-7.0, 7.0, -7.0, 7.0, -7.0, 7.0);
 	glMatrixMode(GL_MODELVIEW);
 }
 

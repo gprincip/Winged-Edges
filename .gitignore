@@ -33,5 +33,6 @@ ConsoleApplication1.VC
 *.db
 *.opendb
 *.sdf
+*.suo
 Debug/*
 ConsoleApplication1/Debug/*
