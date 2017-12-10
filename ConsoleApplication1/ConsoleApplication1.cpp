@@ -39,35 +39,142 @@ void winReshape(GLint w, GLint h)
 }
 
 void trougao(float *a, float *b, float *c) {
-
-	Cvor *cvorA = new Cvor(a[0], a[1], a[2]);
-	Cvor *cvorB = new Cvor(a[0], a[1], a[2]);
-	Cvor *cvorC = new Cvor(a[0], a[1], a[2]);
-
-	Lice *lice = new Lice(NULL, mash);
-
-	mash->cvorovi.push_back(cvorA);
-	mash->cvorovi.push_back(cvorB);
-	mash->cvorovi.push_back(cvorC);
-	
-
-
 	glVertex3fv(a);
 	glVertex3fv(b);
 	glVertex3fv(c);
 }
 
-void tetraedar(float *a, float *b, float *c, float *d) {
+void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 
 
-	glColor3f(1.0, 0.0, 0.0);
-	trougao(a, b, c);
+	/*glColor3f(1.0, 0.0, 0.0);
+	trougao(temeA, temeB, temeC);
 	glColor3f(0.0, 1.0, 0.0);
-	trougao(a, b, d);
+	trougao(temeA, temeB, temeD);
 	glColor3f(0.0, 0.0, 1.0);
-	trougao(a, d, c);
+	trougao(temeA, temeD, temeC);
 	glColor3f(0.0, 0.0, 0.0);
-	trougao(b, c, d);
+	trougao(temeB, temeC, temeD);*/
+
+	Cvor *v1 = new Cvor(temeA[0], temeA[1], temeA[2]);
+	Cvor *v2 = new Cvor(temeA[0], temeA[1], temeA[2]);
+	Cvor *v3 = new Cvor(temeA[0], temeA[1], temeA[2]);
+	Cvor *v4 = new Cvor(temeA[0], temeA[1], temeA[2]);
+
+	Lice *f1 = new Lice(NULL, mash);
+	Lice *f2 = new Lice(NULL, mash);
+	Lice *f3 = new Lice(NULL, mash);
+	Lice *f4 = new Lice(NULL, mash);
+
+	//f3
+	Ivica *a = new Ivica(v1, f3, NULL, NULL, NULL, mash);
+	Ivica *b = new Ivica(v2, f3, NULL, a, NULL, mash);
+	Ivica *c = new Ivica(v3, f3, NULL, b, a, mash);
+
+	//f2
+	Ivica *dSym = new Ivica(v4, f2, NULL, NULL, NULL, mash);
+	Ivica *bSym = new Ivica(v3, f2, b, dSym, NULL, mash);
+	Ivica *fSym = new Ivica(v2, f2, NULL, bSym, dSym, mash);
+
+	//f4
+	Ivica *d = new Ivica(v3, f4, dSym, NULL, NULL, mash);
+	Ivica *e = new Ivica(v4, f4, NULL, d, NULL, mash);
+	Ivica *cSym = new Ivica(v1, f4, c, e, d, mash);
+
+	//f1
+	Ivica *f = new Ivica(v4, f1, fSym, NULL, NULL, mash);
+	Ivica *aSym = new Ivica(v2, f1, a, f, NULL, mash);
+	Ivica *eSym = new Ivica(v1, f1, e, aSym, f, mash);
+
+	//------------
+	//f3	
+	a->eSym = aSym;
+	a->preth = c;
+	a->sled = b;
+
+	b->eSym = bSym;
+	b->sled = c;
+
+	c->eSym = cSym;
+	//f2
+
+	dSym->eSym = d;
+	dSym->preth = fSym;
+	dSym->sled = bSym;
+
+	bSym->sled = fSym;
+
+	fSym->eSym = f;
+
+	//f4
+	d->preth = cSym;
+	d->sled = e;
+
+	e->eSym = eSym;
+	e->sled = cSym;
+
+	//f1
+	f->preth = eSym;
+	f->sled = aSym;
+	aSym->sled = eSym;
+
+
+	//lica
+
+	f1->e = f;
+	f2->e = fSym;
+	f3->e = a;
+	f4->e = d;
+	//------------
+
+	mash->cvorovi.push_back(v1);
+	mash->cvorovi.push_back(v2);
+	mash->cvorovi.push_back(v3);
+	mash->cvorovi.push_back(v4);
+
+	mash->ivice.push_back(a);
+	mash->ivice.push_back(b);
+	mash->ivice.push_back(c);
+	mash->ivice.push_back(d);
+	mash->ivice.push_back(e);
+	mash->ivice.push_back(f);
+	mash->ivice.push_back(aSym);
+	mash->ivice.push_back(bSym);
+	mash->ivice.push_back(cSym);
+	mash->ivice.push_back(dSym);
+	mash->ivice.push_back(eSym);
+	mash->ivice.push_back(fSym);
+
+	mash->lica.push_back(f1);
+	mash->lica.push_back(f2);
+	mash->lica.push_back(f3);
+	mash->lica.push_back(f4);
+}
+
+void crtajMash() {
+
+	float r, g, b;
+
+	for (int i = 0; i < mash->lica.size(); i++) {
+
+		r = ((float)rand() / RAND_MAX);
+		g = ((float)rand() / RAND_MAX);
+		b = ((float)rand() / RAND_MAX);
+
+		Ivica *start = mash->lica[i]->e;
+		glColor3f(r, g, b);
+
+		glBegin(GL_TRIANGLES);
+
+		do {
+			glVertex3f(mash->lica[i]->e->v->x, mash->lica[i]->e->v->y, mash->lica[i]->e->v->z);
+			start = start->sled;
+		} while (mash->lica[i]->e != start);
+
+		glEnd();
+		glFlush();
+
+	}
 
 }
 
@@ -83,6 +190,8 @@ void display()
 	glBegin(GL_TRIANGLES);
 
 	tetraedar(a, b, c, d);
+
+	crtajMash();
 
 	glEnd();
 	glFlush();

@@ -13,12 +13,13 @@ public:
 	Mash *mash;
 	bool podeljena;
 
-	Ivica(Cvor *v = NULL, Lice *l = NULL, Ivica *eSym = NULL, Ivica *preth = NULL, Ivica *sled = NULL) {
+	Ivica(Cvor *v = NULL, Lice *l = NULL, Ivica *eSym = NULL, Ivica *preth = NULL, Ivica *sled = NULL, Mash *mash = NULL) {
 		this->v = v;
 		this->l = l;
 		this->eSym = eSym;
 		this->preth = preth;
 		this->sled = sled;
+		this->mash = mash;
 		podeljena = false;
 	}
 
@@ -58,6 +59,10 @@ public:
 		c->z += preth->v->x * (1 / 8);
 		c->z += eSym->preth->v->x * (1 / 8);
 		
+		mash->cvorovi.push_back(c);
+		mash->ivice.push_back(en);
+		mash->ivice.push_back(enSym);
+
 	}
 
 };
