@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include<stdlib.h>
+#include<iostream>
 #include "GL\glut.h"
 
 #include "Mash.h"
@@ -12,6 +13,8 @@
 
 #include<math.h>
 #include<vector>
+
+using namespace std;
 
 int width = 500;
 int height = 500;
@@ -57,9 +60,9 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	trougao(temeB, temeC, temeD);*/
 
 	Cvor *v1 = new Cvor(temeA[0], temeA[1], temeA[2]);
-	Cvor *v2 = new Cvor(temeA[0], temeA[1], temeA[2]);
-	Cvor *v3 = new Cvor(temeA[0], temeA[1], temeA[2]);
-	Cvor *v4 = new Cvor(temeA[0], temeA[1], temeA[2]);
+	Cvor *v2 = new Cvor(temeB[0], temeB[1], temeB[2]);
+	Cvor *v3 = new Cvor(temeC[0], temeC[1], temeC[2]);
+	Cvor *v4 = new Cvor(temeD[0], temeD[1], temeD[2]);
 
 	Lice *f1 = new Lice(NULL, mash);
 	Lice *f2 = new Lice(NULL, mash);
@@ -149,6 +152,7 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	mash->lica.push_back(f2);
 	mash->lica.push_back(f3);
 	mash->lica.push_back(f4);
+
 }
 
 void crtajMash() {
@@ -161,20 +165,21 @@ void crtajMash() {
 		g = ((float)rand() / RAND_MAX);
 		b = ((float)rand() / RAND_MAX);
 
-		Ivica *start = mash->lica[i]->e;
-		glColor3f(r, g, b);
+		vector<Cvor*> cvorovi = mash->lica[i]->sviCvorovi();
 
+		glColor3f(r, g, b);
+		glPointSize(5);
 		glBegin(GL_TRIANGLES);
 
-		do {
-			glVertex3f(mash->lica[i]->e->v->x, mash->lica[i]->e->v->y, mash->lica[i]->e->v->z);
-			start = start->sled;
-		} while (mash->lica[i]->e != start);
+		for (int j = 0; j < cvorovi.size(); j++) {
+			glVertex3f(cvorovi[j]->x, cvorovi[j]->y, cvorovi[j]->z);
+		}
 
 		glEnd();
 		glFlush();
 
 	}
+
 
 }
 
@@ -187,14 +192,10 @@ void display()
 		b[3] = { 0.0, 0.0, -7.0 },
 		c[3] = { 4.0, 7.0, 6.0 },
 		d[3] = { -6.0, 6.0, -4.0 };
-	glBegin(GL_TRIANGLES);
 
 	tetraedar(a, b, c, d);
 
 	crtajMash();
-
-	glEnd();
-	glFlush();
 }
 
 

@@ -4,16 +4,16 @@
 #include"Ivica.h"
 #include<vector>
 
-std::vector<Cvor*> Lice::sviCvorovi(Lice *l){
+std::vector<Cvor*> Lice::sviCvorovi(){
 
 	std::vector<Cvor*> ret;
 
-	Ivica *temp = l->e;
+	Ivica *temp = this->e;
 	
-	while (temp != l->e){
+	do{
 		ret.push_back(temp->v);
 		temp = temp->sled;
-	}
+	} while (temp != this->e);
 
 return ret;
 }
@@ -22,7 +22,7 @@ return ret;
 //ovo treba u cvor
 void Lice::azurirajCvorove(){
 
-	std::vector<Cvor*> susedniCvorovi = sviCvorovi(this); 
+	std::vector<Cvor*> susedniCvorovi = sviCvorovi(); 
 
 	float sumax = 0;
 	float sumay = 0;

@@ -14,7 +14,7 @@ public:
 		this->mash = mash;
 	}
 
-	std::vector<Cvor*> sviCvorovi(Lice *l);
+	std::vector<Cvor*> sviCvorovi();
 
 	void dodaj(Ivica *ivica) {
 		mash->ivice.push_back(ivica);
