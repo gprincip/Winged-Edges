@@ -30,8 +30,8 @@ public:
 	void deli() {
 
 		Cvor *c = new Cvor(this); //treba da bude od en
-		Ivica *en = new Ivica(c, l, eSym, this, sled);
-		Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled);
+		Ivica *en = new Ivica(c, l, eSym, this, sled, mash);
+		Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled, mash);
 
 		c->e = en;
 

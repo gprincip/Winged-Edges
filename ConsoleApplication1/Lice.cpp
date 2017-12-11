@@ -19,27 +19,6 @@ return ret;
 }
 
 
-//ovo treba u cvor
-void Lice::azurirajCvorove(){
-
-	std::vector<Cvor*> susedniCvorovi = sviCvorovi(); 
-
-	float sumax = 0;
-	float sumay = 0;
-	float sumaz = 0;
-
-	for (int i = 0; i < susedniCvorovi.size(); i++){
-
-		sumax += susedniCvorovi[i]->x;
-		sumay += susedniCvorovi[i]->y;
-		sumaz += susedniCvorovi[i]->z;
-
-	}
-
-	float beta = 3.0 / (8 * susedniCvorovi.size());
-
-}
-
 void Lice::deli() {
 		while (true) {
 
@@ -55,12 +34,12 @@ void Lice::deli() {
 			Cvor *v3 = e3->v;
 			Cvor *v4 = e4->v;
 
-			Ivica *en1 = new Ivica(v2, e->l, NULL /*treba da se stavi en2*/, e1, e4);
-			Ivica *en2 = new Ivica(v4, NULL/*novo lice*/, en1, e3, e2);
+			Ivica *en1 = new Ivica(v2, e->l, NULL /*treba da se stavi en2*/, e1, e4, mash);
+			Ivica *en2 = new Ivica(v4, NULL/*novo lice*/, en1, e3, e2, mash);
 
 			en1->eSym = en2;
 
-			Lice *lnovo = new Lice(en2);
+			Lice *lnovo = new Lice(en2, mash);
 
 			en2->l = lnovo;
 
@@ -72,6 +51,12 @@ void Lice::deli() {
 			e1->sled = en1;
 
 			e4->preth = en1;
+
+			mash->ivice.push_back(en1);
+			mash->ivice.push_back(en2);
+			mash->lica.push_back(lnovo);
+
 			this->e = en1;
+			podeljeno = true;
 		}
 }

@@ -49,16 +49,6 @@ void trougao(float *a, float *b, float *c) {
 
 void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 
-
-	/*glColor3f(1.0, 0.0, 0.0);
-	trougao(temeA, temeB, temeC);
-	glColor3f(0.0, 1.0, 0.0);
-	trougao(temeA, temeB, temeD);
-	glColor3f(0.0, 0.0, 1.0);
-	trougao(temeA, temeD, temeC);
-	glColor3f(0.0, 0.0, 0.0);
-	trougao(temeB, temeC, temeD);*/
-
 	Cvor *v1 = new Cvor(temeA[0], temeA[1], temeA[2]);
 	Cvor *v2 = new Cvor(temeB[0], temeB[1], temeB[2]);
 	Cvor *v3 = new Cvor(temeC[0], temeC[1], temeC[2]);
@@ -152,6 +142,22 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	mash->lica.push_back(f2);
 	mash->lica.push_back(f3);
 	mash->lica.push_back(f4);
+
+	vector<Ivica*> ivice = mash->ivice;
+
+	for (int i = 0; i < ivice.size(); i++) {
+		ivice[i]->deli();
+	}
+
+	for (int i = 0; i < mash->cvorovi.size(); i++) {
+		mash->cvorovi[i]->azurirajCvorove();
+	}
+
+	vector<Lice*> lica = mash->lica;
+	for (int i = 0; i < lica.size(); i++) {
+		lica[i]->deli();
+	}
+
 
 }
 

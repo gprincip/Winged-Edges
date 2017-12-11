@@ -8,10 +8,12 @@ class Lice {
 public:
 	Ivica *e;
 	Mash *mash;
+	bool podeljeno;
 
 	Lice(Ivica *e = NULL, Mash *mash = NULL) {
 		this->e;
 		this->mash = mash;
+		podeljeno = false;
 	}
 
 	std::vector<Cvor*> sviCvorovi();
@@ -25,7 +27,4 @@ public:
 	}
 
 	void deli();
-
-	void azurirajCvorove();
-
 };
