@@ -11,7 +11,7 @@ public:
 	bool podeljeno;
 
 	Lice(Ivica *e = NULL, Mash *mash = NULL) {
-		this->e;
+		this->e = e;
 		this->mash = mash;
 		podeljeno = false;
 	}

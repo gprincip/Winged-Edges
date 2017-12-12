@@ -80,6 +80,13 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	Ivica *eSym = new Ivica(v1, f1, e, aSym, f, mash);
 
 	//------------
+
+	//cvorovi
+	v1->e = a;
+	v2->e = b;
+	v3->e = c;
+	v4->e = e;
+
 	//f3	
 	a->eSym = aSym;
 	a->preth = c;
@@ -179,6 +186,7 @@ void crtajMash() {
 
 		for (int j = 0; j < cvorovi.size(); j++) {
 			glVertex3f(cvorovi[j]->x, cvorovi[j]->y, cvorovi[j]->z);
+			cout << cvorovi[j]->x << "," << cvorovi[j]->y<<"," << cvorovi[j]->z << endl;
 		}
 
 		glEnd();

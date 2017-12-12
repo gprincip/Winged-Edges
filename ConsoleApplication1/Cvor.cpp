@@ -25,12 +25,11 @@ void Cvor::azurirajCvorove(){
 	Ivica *temp = this->e;
 	std::vector<Cvor*> cvorovi;
 
-	while (temp != this->e){
-
+	//beskonacna petlja
+	do{
 		cvorovi.push_back(temp->sled->sled->v);
 		temp = temp->preth->eSym;
-
-	}
+	} while (temp != this->e);
 
 	float sumax = 0;
 	float sumay = 0;

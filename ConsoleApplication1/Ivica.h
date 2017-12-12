@@ -44,20 +44,20 @@ public:
 		podeljena = true;
 
 		//Koordinate cvora
-		c->x += this->v->x * (3 / 8);
-		c->x += sled->v->x * (3 / 8);
-		c->x += preth->v->x * (1 / 8);
-		c->x += eSym->preth->v->x * (1 / 8);
+		c->x += this->v->x * (3.0 / 8.0);
+		c->x += sled->v->x * (3.0 / 8.0);
+		c->x += preth->v->x * (1.0 / 8.0);
+		c->x += eSym->preth->v->x * (1.0 / 8.0);
 
-		c->y += this->v->x * (3 / 8);
-		c->y += sled->v->x * (3 / 8);
-		c->y += preth->v->x * (1 / 8);
-		c->y += eSym->preth->v->x * (1 / 8);
+		c->y += this->v->y * (3.0 / 8.0);
+		c->y += sled->v->y * (3.0 / 8.0);
+		c->y += preth->v->y * (1.0 / 8.0);
+		c->y += eSym->preth->v->y * (1.0 / 8.0);
 
-		c->z += this->v->x * (3 / 8);
-		c->z += sled->v->x * (3 / 8);
-		c->z += preth->v->x * (1 / 8);
-		c->z += eSym->preth->v->x * (1 / 8);
+		c->z += this->v->z * (3.0 / 8.0);
+		c->z += sled->v->z * (3.0 / 8.0);
+		c->z += preth->v->z * (1.0 / 8.0);
+		c->z += eSym->preth->v->z * (1.0 / 8.0);
 		
 		mash->cvorovi.push_back(c);
 		mash->ivice.push_back(en);
