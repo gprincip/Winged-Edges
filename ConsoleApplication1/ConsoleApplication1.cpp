@@ -156,14 +156,14 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		ivice[i]->deli();
 	}
 
-	for (int i = 0; i < mash->cvorovi.size(); i++) {
+	/*for (int i = 0; i < mash->cvorovi.size(); i++) {
 		mash->cvorovi[i]->azurirajCvorove();
 	}
 
 	vector<Lice*> lica = mash->lica;
 	for (int i = 0; i < lica.size(); i++) {
 		lica[i]->deli();
-	}
+	}*/
 
 
 }
@@ -197,6 +197,65 @@ void crtajMash() {
 
 }
 
+void mockTrougao(float *temeA, float *temeB, float *temeC) {
+
+	Cvor *v1 = new Cvor(temeA[0], temeA[1], temeA[2]);
+	Cvor *v2 = new Cvor(temeB[0], temeB[1], temeB[2]);
+	Cvor *v3 = new Cvor(temeC[0], temeC[1], temeC[2]);
+
+	Ivica *a = new Ivica(v3, NULL, NULL, NULL, NULL, mash);
+	Ivica *b = new Ivica(v1, NULL, NULL, a, NULL, mash);
+	Ivica *c = new Ivica(v2, NULL, NULL, b, a, mash);
+
+	Ivica *aSym = new Ivica(v1, NULL, a, NULL, NULL, mash);
+	Ivica *bSym = new Ivica(v2, NULL, b, NULL, NULL, mash);
+	Ivica *cSym = new Ivica(v3, NULL, c, NULL, NULL, mash);
+
+	Lice *f1 = new Lice(a, mash);
+
+	v1->e = b;
+	v2->e = c;
+	v3->e = a;
+
+	a->l = b->l = c->l = f1;
+
+	a->eSym = aSym;
+	b->eSym = bSym;
+	c->eSym = cSym;
+
+	a->preth = c;
+	a->sled = b;
+	
+	b->preth = a;
+	b->sled = c;
+
+	mash->cvorovi.push_back(v1);
+	mash->cvorovi.push_back(v2);
+	mash->cvorovi.push_back(v3);
+
+	mash->ivice.push_back(a);
+	mash->ivice.push_back(b);
+	mash->ivice.push_back(c);
+
+	mash->lica.push_back(f1);
+
+	vector<Ivica*> ivice = mash->ivice;
+
+	for (int i = 0; i < ivice.size(); i++) {
+		ivice[i]->deli();
+	}
+
+	/*for (int i = 0; i < mash->cvorovi.size(); i++) {
+	mash->cvorovi[i]->azurirajCvorove();
+	}
+
+	vector<Lice*> lica = mash->lica;
+	for (int i = 0; i < lica.size(); i++) {
+	lica[i]->deli();
+	}*/
+
+}
+
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -207,11 +266,16 @@ void display()
 		c[3] = { 4.0, 7.0, 6.0 },
 		d[3] = { -6.0, 6.0, -4.0 };
 
-	tetraedar(a, b, c, d);
+	//tetraedar(a, b, c, d);
+
+	float temeA[3] = { -6.0, - 6.0, 0.0 };
+	float temeB[3] = { -2.0, 0.0 , 0.0 };
+	float temeC[3] = { 2.0 , -6.0 , 0.0 };
+
+	mockTrougao(temeA, temeB, temeC);
 
 	crtajMash();
 }
-
 
 int main(int argc, char** argv)
 {
