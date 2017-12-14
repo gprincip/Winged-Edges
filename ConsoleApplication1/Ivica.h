@@ -45,19 +45,19 @@ public:
 
 		//Koordinate cvora
 		c->x += this->v->x * (3.0 / 8.0);
-		c->x += sled->v->x * (3.0 / 8.0);
-		c->x += preth->v->x * (1.0 / 8.0);
-		c->x += eSym->preth->v->x * (1.0 / 8.0);
+		c->x += sled->sled->v->x * (3.0 / 8.0);
+		c->x += preth->preth->v->x * (1.0 / 8.0);
+		c->x += eSym->preth->preth->preth->v->x * (1.0 / 8.0);
 
 		c->y += this->v->y * (3.0 / 8.0);
-		c->y += sled->v->y * (3.0 / 8.0);
-		c->y += preth->v->y * (1.0 / 8.0);
-		c->y += eSym->preth->v->y * (1.0 / 8.0);
+		c->y += sled->sled->v->y * (3.0 / 8.0);
+		c->y += preth->preth->v->y * (1.0 / 8.0);
+		c->y += eSym->preth->preth->preth->v->y * (1.0 / 8.0);
 
 		c->z += this->v->z * (3.0 / 8.0);
-		c->z += sled->v->z * (3.0 / 8.0);
-		c->z += preth->v->z * (1.0 / 8.0);
-		c->z += eSym->preth->v->z * (1.0 / 8.0);
+		c->z += sled->sled->v->z * (3.0 / 8.0);
+		c->z += preth->preth->v->z * (1.0 / 8.0);
+		c->z += eSym->preth->preth->preth->v->z * (1.0 / 8.0);
 		
 		mash->cvorovi.push_back(c);
 		mash->ivice.push_back(en);

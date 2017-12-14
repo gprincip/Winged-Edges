@@ -266,13 +266,18 @@ void display()
 		c[3] = { 4.0, 7.0, 6.0 },
 		d[3] = { -6.0, 6.0, -4.0 };
 
-	//tetraedar(a, b, c, d);
+	GLfloat a2[3] = { 0.0, 0.0, 0.0 },
+		b2[3] = { 4.0, 0.0, 0.0 },
+		c2[3] = { 2.0, 0.0, 0.1 },
+		d2[3] = { 2.0, 4.0, 1.0 };
+
+	tetraedar(a, b, c, d);
 
 	float temeA[3] = { -6.0, - 6.0, 0.0 };
 	float temeB[3] = { -2.0, 0.0 , 0.0 };
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
 
-	mockTrougao(temeA, temeB, temeC);
+	//mockTrougao(temeA, temeB, temeC);
 
 	crtajMash();
 }
