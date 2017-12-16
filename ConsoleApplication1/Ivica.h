@@ -29,7 +29,7 @@ public:
 
 	void deli() {
 
-		Cvor *c = new Cvor(this); //treba da bude od en
+		Cvor *c = new Cvor(NULL); //treba da bude od en
 		Ivica *en = new Ivica(c, l, eSym, this, sled, mash);
 		Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled, mash);
 

@@ -26,7 +26,7 @@ static void myInit()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-7.0, 7.0, -7.0, 7.0, -7.0, 7.0);
+	glOrtho(-7.0, 7.0, -7.0, 7.0, -7, 7.0);
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -156,15 +156,18 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		ivice[i]->deli();
 	}
 
-	/*for (int i = 0; i < mash->cvorovi.size(); i++) {
+/*
+
+	for (int i = 0; i < mash->cvorovi.size(); i++) {
 		mash->cvorovi[i]->azurirajCvorove();
 	}
+	*/
 
 	vector<Lice*> lica = mash->lica;
 	for (int i = 0; i < lica.size(); i++) {
 		lica[i]->deli();
-	}*/
-
+	}
+	
 
 }
 
@@ -181,20 +184,54 @@ void crtajMash() {
 		vector<Cvor*> cvorovi = mash->lica[i]->sviCvorovi();
 
 		glColor3f(r, g, b);
-		glPointSize(5);
-		glBegin(GL_TRIANGLES);
+		glPointSize(10);
+		glBegin(GL_POINTS); //bilo je triangles, sad crta tacke
 
 		for (int j = 0; j < cvorovi.size(); j++) {
 			glVertex3f(cvorovi[j]->x, cvorovi[j]->y, cvorovi[j]->z);
 			cout << cvorovi[j]->x << "," << cvorovi[j]->y<<"," << cvorovi[j]->z << endl;
 		}
-
 		glEnd();
-		glFlush();
+
 
 	}
 
+	for (int i = 0; i < mash->ivice.size(); i++) {
 
+		glColor3f(1, 1, 1);
+		glLineWidth(3);
+		glBegin(GL_LINES);
+
+		glVertex3f(mash->ivice[i]->v->x, mash->ivice[i]->v->y, mash->ivice[i]->v->z);
+
+		glVertex3f(mash->ivice[i]->sled->v->x, mash->ivice[i]->sled->v->y, mash->ivice[i]->sled->v->z);
+
+		glEnd();
+
+	}
+
+	glPointSize(20);
+	glBegin(GL_POINTS);
+
+	glVertex3f(mash->cvorovi[0]->x, mash->cvorovi[0]->y, mash->cvorovi[0]->z);
+
+	glEnd();
+
+	glColor3f(1, 0, 0);
+	glLineWidth(10);
+	glBegin(GL_LINE_STRIP);
+
+	Ivica *e = mash->cvorovi[0]->e;
+
+	glVertex3f(e->v->x , e->v->y , e->v->z);
+	glVertex3f(e->sled->v->x, e->sled->v->y, e->sled->v->z);
+
+	glVertex3f(e->sled->sled->v->x, e->sled->sled->v->y, e->sled->sled->v->z);
+	//glVertex3f(e->sled->sled->sled->v->x, e->sled->sled->sled->v->y, e->sled->sled->sled->v->z);
+
+	glEnd();
+
+	glFlush();
 }
 
 void mockTrougao(float *temeA, float *temeB, float *temeC) {
@@ -256,13 +293,12 @@ void mockTrougao(float *temeA, float *temeB, float *temeC) {
 
 }
 
-void display()
-{
+void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 	GLfloat a[3] = { 0.0, 4.0, 0.0 },
-		b[3] = { 0.0, 0.0, -7.0 },
+		b[3] = { 0.0, 0.0, -6.0 },
 		c[3] = { 4.0, 7.0, 6.0 },
 		d[3] = { -6.0, 6.0, -4.0 };
 
@@ -273,13 +309,14 @@ void display()
 
 	tetraedar(a, b, c, d);
 
-	float temeA[3] = { -6.0, - 6.0, 0.0 };
+	float temeA[3] = { -6.0, -6.0, 0.0 };
 	float temeB[3] = { -2.0, 0.0 , 0.0 };
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
 
 	//mockTrougao(temeA, temeB, temeC);
 
 	crtajMash();
+
 }
 
 int main(int argc, char** argv)
