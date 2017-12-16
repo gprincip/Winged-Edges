@@ -41,9 +41,17 @@ public:
 		eSym->sled = enSym;
 		eSym->eSym = en;
 
+		en->sled->preth = en;
+		enSym->sled->preth = enSym;
+
 		podeljena = true;
 
 		//Koordinate cvora
+		//zapamti stare vrednosti
+		c->xpom = c->x;
+		c->ypom = c->y;
+		c->zpom = c->z;
+
 		c->x += this->v->x * (3.0 / 8.0);
 		c->x += sled->sled->v->x * (3.0 / 8.0);
 		c->x += preth->preth->v->x * (1.0 / 8.0);

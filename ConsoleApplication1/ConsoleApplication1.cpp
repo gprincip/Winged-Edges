@@ -149,26 +149,24 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	mash->lica.push_back(f2);
 	mash->lica.push_back(f3);
 	mash->lica.push_back(f4);
+	int i = 0;
+	while (i < 2) {
+		i++;
+		vector<Ivica*> ivice = mash->ivice;
 
-	vector<Ivica*> ivice = mash->ivice;
+		for (int i = 0; i < ivice.size(); i++) {
+			ivice[i]->deli();
+		}
 
-	for (int i = 0; i < ivice.size(); i++) {
-		ivice[i]->deli();
+		for (int i = 0; i < mash->cvorovi.size(); i++) {
+			mash->cvorovi[i]->azurirajCvorove();
+		}
+
+		vector<Lice*> lica = mash->lica;
+		for (int i = 0; i < lica.size(); i++) {
+			lica[i]->deli();
+		}
 	}
-
-/*
-
-	for (int i = 0; i < mash->cvorovi.size(); i++) {
-		mash->cvorovi[i]->azurirajCvorove();
-	}
-	*/
-
-	vector<Lice*> lica = mash->lica;
-	for (int i = 0; i < lica.size(); i++) {
-		lica[i]->deli();
-	}
-	
-
 }
 
 void crtajMash() {
@@ -185,7 +183,7 @@ void crtajMash() {
 
 		glColor3f(r, g, b);
 		glPointSize(10);
-		glBegin(GL_POINTS); //bilo je triangles, sad crta tacke
+		glBegin(GL_TRIANGLES); //bilo je triangles, sad crta tacke
 
 		for (int j = 0; j < cvorovi.size(); j++) {
 			glVertex3f(cvorovi[j]->x, cvorovi[j]->y, cvorovi[j]->z);
@@ -199,7 +197,7 @@ void crtajMash() {
 	for (int i = 0; i < mash->ivice.size(); i++) {
 
 		glColor3f(1, 1, 1);
-		glLineWidth(3);
+		glLineWidth(1);
 		glBegin(GL_LINES);
 
 		glVertex3f(mash->ivice[i]->v->x, mash->ivice[i]->v->y, mash->ivice[i]->v->z);
@@ -210,26 +208,32 @@ void crtajMash() {
 
 	}
 
-	glPointSize(20);
-	glBegin(GL_POINTS);
+	//glPointSize(20);
+	//glBegin(GL_POINTS);
 
-	glVertex3f(mash->cvorovi[0]->x, mash->cvorovi[0]->y, mash->cvorovi[0]->z);
+	//glVertex3f(mash->cvorovi[3]->x, mash->cvorovi[3]->y, mash->cvorovi[3]->z);
 
-	glEnd();
+	//glEnd();
 
-	glColor3f(1, 0, 0);
-	glLineWidth(10);
-	glBegin(GL_LINE_STRIP);
+	//glColor3f(1, 0, 0);
+	//glLineWidth(10);
+	//glBegin(GL_LINE_STRIP);
 
-	Ivica *e = mash->cvorovi[0]->e;
+	//Ivica *e = mash->cvorovi[3]->e;
+	//e = e->eSym;
+	//glVertex3f(e->v->x , e->v->y , e->v->z);
+	//glVertex3f(e->preth->v->x, e->preth->v->y, e->preth->v->z);
 
-	glVertex3f(e->v->x , e->v->y , e->v->z);
-	glVertex3f(e->sled->v->x, e->sled->v->y, e->sled->v->z);
+	////*e = e->eSym;
 
-	glVertex3f(e->sled->sled->v->x, e->sled->sled->v->y, e->sled->sled->v->z);
-	//glVertex3f(e->sled->sled->sled->v->x, e->sled->sled->sled->v->y, e->sled->sled->sled->v->z);
+	//glVertex3f(e->v->x, e->v->y, e->v->z);
+	//glVertex3f(e->sled->v->x, e->sled->v->y, e->sled->v->z);
+	//glVertex3f(e->sled->sled->v->x, e->sled->sled->v->y, e->sled->sled->v->z);*/
 
-	glEnd();
+	////glVertex3f(e->sled->sled->v->x, e->sled->sled->v->y, e->sled->sled->v->z);
+	////glVertex3f(e->sled->sled->sled->v->x, e->sled->sled->sled->v->y, e->sled->sled->sled->v->z);
+
+	//glEnd();
 
 	glFlush();
 }
@@ -298,7 +302,7 @@ void display() {
 
 
 	GLfloat a[3] = { 0.0, 4.0, 0.0 },
-		b[3] = { 0.0, 0.0, -6.0 },
+		b[3] = { 0.0, 0.0, -7.0 },
 		c[3] = { 4.0, 7.0, 6.0 },
 		d[3] = { -6.0, 6.0, -4.0 };
 

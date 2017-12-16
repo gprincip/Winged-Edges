@@ -18,9 +18,9 @@ public:
 	}
 
 	Cvor(float x, float y, float z){
-		this->x = x;
-		this->y = y;
-		this->z = z;
+		this->x = xpom = x;
+		this->y = ypom = y;
+		this->z = zpom = z;
 	}
 
 	std::vector<Lice*> svaLica(Cvor *c);
