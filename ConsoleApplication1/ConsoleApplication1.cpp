@@ -150,17 +150,30 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	mash->lica.push_back(f3);
 	mash->lica.push_back(f4);
 	int i = 0;
-	while (i < 2) {
+	while (i < 1) {
 		i++;
-		vector<Ivica*> ivice = mash->ivice;
+		/*vector<Ivica*> ivice = mash->ivice;
 
 		for (int i = 0; i < ivice.size(); i++) {
-			ivice[i]->deli();
+				ivice[i]->deli();
+			}
+		}*/
+
+		for (int i = 0; i < mash->ivice.size(); i++) {
+
+			if (!mash->ivice[i]->podeljena) {
+
+				mash->ivice[i]->podeljena = mash->ivice[i]->eSym->podeljena = true;
+
+				mash->ivice[i]->deli();
+
+			}
+
 		}
 
-		for (int i = 0; i < mash->cvorovi.size(); i++) {
+		/*for (int i = 0; i < mash->cvorovi.size(); i++) {
 			mash->cvorovi[i]->azurirajCvorove();
-		}
+		}*/
 
 		vector<Lice*> lica = mash->lica;
 		for (int i = 0; i < lica.size(); i++) {
@@ -187,7 +200,7 @@ void crtajMash() {
 
 		for (int j = 0; j < cvorovi.size(); j++) {
 			glVertex3f(cvorovi[j]->x, cvorovi[j]->y, cvorovi[j]->z);
-			cout << cvorovi[j]->x << "," << cvorovi[j]->y<<"," << cvorovi[j]->z << endl;
+			//cout << cvorovi[j]->x << "," << cvorovi[j]->y<<"," << cvorovi[j]->z << endl;
 		}
 		glEnd();
 
@@ -208,32 +221,33 @@ void crtajMash() {
 
 	}
 
-	//glPointSize(20);
-	//glBegin(GL_POINTS);
+	glPointSize(10);
+	glBegin(GL_POINTS);
 
-	//glVertex3f(mash->cvorovi[3]->x, mash->cvorovi[3]->y, mash->cvorovi[3]->z);
+	glVertex3f(mash->cvorovi[0]->x, mash->cvorovi[0]->y, mash->cvorovi[0]->z);
 
-	//glEnd();
+	glEnd();
 
-	//glColor3f(1, 0, 0);
-	//glLineWidth(10);
-	//glBegin(GL_LINE_STRIP);
+	glColor3f(1, 0, 0);
+	glLineWidth(5);
+	glBegin(GL_LINE_STRIP);
 
-	//Ivica *e = mash->cvorovi[3]->e;
-	//e = e->eSym;
-	//glVertex3f(e->v->x , e->v->y , e->v->z);
-	//glVertex3f(e->preth->v->x, e->preth->v->y, e->preth->v->z);
+	Ivica *e = mash->cvorovi[0]->e;
 
-	////*e = e->eSym;
+	glVertex3f(e->v->x , e->v->y , e->v->z);
+	glVertex3f(e->sled->v->x, e->sled->v->y, e->sled->v->z);
 
-	//glVertex3f(e->v->x, e->v->y, e->v->z);
-	//glVertex3f(e->sled->v->x, e->sled->v->y, e->sled->v->z);
-	//glVertex3f(e->sled->sled->v->x, e->sled->sled->v->y, e->sled->sled->v->z);*/
+	e = e->preth->eSym;
 
-	////glVertex3f(e->sled->sled->v->x, e->sled->sled->v->y, e->sled->sled->v->z);
-	////glVertex3f(e->sled->sled->sled->v->x, e->sled->sled->sled->v->y, e->sled->sled->sled->v->z);
+	glVertex3f(e->v->x, e->v->y, e->v->z);
+	glVertex3f(e->sled->v->x, e->sled->v->y, e->sled->v->z);
 
-	//glEnd();
+	e = e->preth->eSym;
+
+	glVertex3f(e->v->x, e->v->y, e->v->z);
+	glVertex3f(e->sled->v->x, e->sled->v->y, e->sled->v->z);
+
+	glEnd();
 
 	glFlush();
 }

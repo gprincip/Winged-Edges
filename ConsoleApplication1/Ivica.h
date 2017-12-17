@@ -3,6 +3,9 @@
 #include"Lice.h"
 #include"Ivica.h"
 
+using namespace std;
+#include<iostream>
+
 class Ivica {
 public:
 	Cvor *v;
@@ -45,6 +48,9 @@ public:
 		enSym->sled->preth = enSym;
 
 		podeljena = true;
+		eSym->podeljena = true;
+		en->podeljena = true;
+		enSym->podeljena = true;
 
 		//Koordinate cvora
 		//zapamti stare vrednosti
@@ -52,24 +58,30 @@ public:
 		c->ypom = c->y;
 		c->zpom = c->z;
 
-		c->x += this->v->x * (3.0 / 8.0);
-		c->x += sled->sled->v->x * (3.0 / 8.0);
-		c->x += preth->preth->v->x * (1.0 / 8.0);
-		c->x += eSym->preth->preth->preth->v->x * (1.0 / 8.0);
+		c->x += this->v->x * (3.0 / 8.0); cout << "x1: " << this->v->x << "   ";
+		c->x += sled->sled->v->x * (3.0 / 8.0); cout << "x2: " << sled->sled->v->x << "   ";
+		c->x += preth->v->x * (1.0 / 8.0); cout << "x3: " << preth->v->x << "   ";
+		c->x += eSym->preth->preth->v->x * (1.0 / 8.0); cout << "x4: " << eSym->preth->preth->v->x << "   ";
+		cout << endl;
 
 		c->y += this->v->y * (3.0 / 8.0);
 		c->y += sled->sled->v->y * (3.0 / 8.0);
-		c->y += preth->preth->v->y * (1.0 / 8.0);
-		c->y += eSym->preth->preth->preth->v->y * (1.0 / 8.0);
+		c->y += preth->v->y * (1.0 / 8.0);
+		c->y += eSym->preth->preth->v->y * (1.0 / 8.0);
 
 		c->z += this->v->z * (3.0 / 8.0);
 		c->z += sled->sled->v->z * (3.0 / 8.0);
-		c->z += preth->preth->v->z * (1.0 / 8.0);
-		c->z += eSym->preth->preth->preth->v->z * (1.0 / 8.0);
+		c->z += preth->v->z * (1.0 / 8.0);
+		c->z += eSym->preth->preth->v->z * (1.0 / 8.0);
+
 		
 		mash->cvorovi.push_back(c);
 		mash->ivice.push_back(en);
 		mash->ivice.push_back(enSym);
+
+	}
+
+	void podesiKoordinateCvora(Cvor *c) {
 
 	}
 
