@@ -47,11 +47,6 @@ public:
 		en->sled->preth = en;
 		enSym->sled->preth = enSym;
 
-		podeljena = true;
-		eSym->podeljena = true;
-		en->podeljena = true;
-		enSym->podeljena = true;
-
 		//Koordinate cvora
 		//zapamti stare vrednosti
 		c->xpom = c->x;
