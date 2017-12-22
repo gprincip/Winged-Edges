@@ -53,7 +53,7 @@ public:
 		c->ypom = c->y;
 		c->zpom = c->z;
 
-		c->x += this->v->x * (3.0 / 8.0); cout << "x1: " << this->v->x << "   ";
+		/*c->x += this->v->x * (3.0 / 8.0); cout << "x1: " << this->v->x << "   ";
 		c->x += sled->sled->v->x * (3.0 / 8.0); cout << "x2: " << sled->sled->v->x << "   ";
 		c->x += preth->v->x * (1.0 / 8.0); cout << "x3: " << preth->v->x << "   ";
 		c->x += eSym->preth->preth->v->x * (1.0 / 8.0); cout << "x4: " << eSym->preth->preth->v->x << "   ";
@@ -67,9 +67,10 @@ public:
 		c->z += this->v->z * (3.0 / 8.0);
 		c->z += sled->sled->v->z * (3.0 / 8.0);
 		c->z += preth->v->z * (1.0 / 8.0);
-		c->z += eSym->preth->preth->v->z * (1.0 / 8.0);
+		c->z += eSym->preth->preth->v->z * (1.0 / 8.0);*/
 
-		
+		mash->noviCvorovi.push_back(c);
+
 		mash->cvorovi.push_back(c);
 		mash->ivice.push_back(en);
 		mash->ivice.push_back(enSym);

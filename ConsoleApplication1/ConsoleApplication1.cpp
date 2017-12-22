@@ -26,12 +26,16 @@ static void myInit()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-7.0, 7.0, -7.0, 7.0, -7, 7.0);
+	glOrtho(-7.0, 7.0, -7.0, 7.0, -7.0, 7.0);
+	/*gluPerspective(40.0, 500.0 / 500.0, -13, 13);
+	gluLookAt(0, 0, 12.9, 0, 0, 12, 0, 1, 0);*/
 	glMatrixMode(GL_MODELVIEW);
 }
 
 void winReshape(GLint w, GLint h)
 {
+	
+	mash->obrisiPodatke();
 
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
@@ -47,6 +51,29 @@ void trougao(float *a, float *b, float *c) {
 	glVertex3fv(c);
 }
 
+void podesiKoordinateCvora(Cvor *c) {
+
+	Cvor *levo = c->e->preth->v;
+	Cvor *desno = c->e->sled->sled->v;
+	Cvor *gore = c->e->preth->preth->v;
+	Cvor *dole = c->e->eSym->sled->sled->sled->v;
+
+	c->x += levo->x * (3.0 / 8.0);
+	c->x += desno->x * (3.0 / 8.0);
+	c->x += gore->x * (1.0 / 8.0);
+	c->x += dole->x * (1.0 / 8.0);
+
+	c->y += levo->y * (3.0 / 8.0);
+	c->y += desno->y * (3.0 / 8.0);
+	c->y += gore->y * (1.0 / 8.0);
+	c->y += dole->y * (1.0 / 8.0);
+
+	c->z += levo->z * (3.0 / 8.0);
+	c->z += desno->z * (3.0 / 8.0);
+	c->z += gore->z * (1.0 / 8.0);
+	c->z += dole->z * (1.0 / 8.0);
+
+}
 
 void crtajMash() {
 
@@ -78,7 +105,7 @@ void crtajMash() {
 
 void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 
-	Ivica *e1 = mash->ivice[0];
+	Ivica *e1 = mash->ivice[1];
 
 	//***************************************************
 	Cvor *c1 = e1->v;
@@ -86,24 +113,24 @@ void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 	Cvor *c3 = e1->sled->sled->v;
 	Cvor *c4 = e1->eSym->sled->sled->v;
 
-	/*glColor3f(1, 0, 0);
-	glLineWidth(5);
+	glColor3f(1, 0, 0);
+	glLineWidth(3);
 	glBegin(GL_LINE_STRIP);
 
 	glVertex3f(e1->v->x, e1->v->y, e1->v->z);
 	glVertex3f(e1->sled->v->x, e1->sled->v->y, e1->sled->v->z);
-	glVertex3f(e1->sled->sled->v->x, e1->sled->sled->v->y, e1->sled->sled->v->z);
-	glVertex3f(e1->sled->sled->sled->v->x, e1->sled->sled->sled->v->y, e1->sled->sled->sled->v->z);
+	/*glVertex3f(e1->sled->sled->v->x, e1->sled->sled->v->y, e1->sled->sled->v->z);
+	glVertex3f(e1->sled->sled->sled->v->x, e1->sled->sled->sled->v->y, e1->sled->sled->sled->v->z);*/
 
 	glEnd();
-	glFlush();*/
+	glFlush();
 
 	glColor3f(1, 0, 0);
-	glPointSize(5);
+	glPointSize(10);
 	glBegin(GL_POINTS);
 
 	glVertex3f(c1->x , c1->y , c1->z);
-	glVertex3f(c2->x, c2->y, c2->z+0.001);
+	glVertex3f(c2->x, c2->y, c2->z);
 	glVertex3f(c3->x, c3->y, c3->z);
 	glVertex3f(c4->x, c4->y, c4->z);
 
@@ -137,7 +164,6 @@ void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 	c->x += c2->x * (3.0 / 8.0);
 	c->x += c3->x * (1.0 / 8.0);
 	c->x += c4->x * (1.0 / 8.0); 
-	
 
 	c->y += c1->y * (3.0 / 8.0);
 	c->y += c2->y * (3.0 / 8.0);
@@ -153,8 +179,7 @@ void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 	glPointSize(10);
 	glBegin(GL_POINTS);
 
-	glVertex3f(c->x, c->y, c->z+1);
-
+	glVertex3f(c->x, c->y, c->z);
 
 	glEnd();
 	glFlush();
@@ -268,56 +293,73 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	mash->lica.push_back(f3);
 	mash->lica.push_back(f4);
 
-	test(temeA , temeB , temeC , temeD);
+	//test(temeA , temeB , temeC , temeD); 
+	
+	int k = 0;
+	while (k < 1) {
+		k++;
 
-	int i = 0;
-	while (i < 1) {
-		i++;
 		vector<Ivica*> ivice = mash->ivice;
+		vector<Cvor*> cvorovi = mash->cvorovi; //stari cvorovi
+		
+		for (int i = 0; i < ivice.size(); i++) {
+			if (!ivice[i]->podeljena) {
+				ivice[i]->podeljena = true;
+				ivice[i]->eSym->podeljena = true;
+				ivice[i]->deli();
+			}
+		}
 
-		//for (int i = 0; i < ivice.size(); i++) {
-		//	if (!ivice[i]->podeljena) {
-		//		ivice[i]->podeljena = true;
-		//		ivice[i]->eSym->podeljena = true;
-		//		ivice[i]->deli();
-		//	}
-		//}
+		for (int i = 0; i < mash->noviCvorovi.size(); i++) {
+			podesiKoordinateCvora(mash->noviCvorovi[i]);
+		}
 
+		mash->noviCvorovi.erase(mash->noviCvorovi.begin(), mash->noviCvorovi.end());
 
-		///*for (int i = 0; i < mash->cvorovi.size(); i++) {
-		//	mash->cvorovi[i]->azurirajCvorove();
-		//}*/
+		for (int i = 0; i < cvorovi.size(); i++) {
+			cvorovi[i]->azurirajCvorove();
+		}
+		
 
-		//vector<Lice*> lica = mash->lica;
-		//for (int i = 0; i < lica.size(); i++) {
-		//	lica[i]->deli();
-		//}
+		vector<Lice*> lica = mash->lica;
+		for (int i = 0; i < lica.size(); i++) {
+			lica[i]->deli();
+		}
+
+		for (int i = 0; i < mash->ivice.size(); i++) {
+			mash->ivice[i]->podeljena = false;
+		}
+
 	}
+	
 }
 
+int rot = 0;
+void update(int value) {
 
+	rot = (rot + 1) % 360;
+
+	glutPostRedisplay();
+	glutTimerFunc(25, update, 0);
+
+}
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
 
+	glTranslated(0, -1, 0);
 
-	GLfloat a[3] = { 0.0, 4.0, 0.0 },
-		b[3] = { 0.0, 0.0, -7.0 },
-		c[3] = { 4.0, 7.0, 6.0 },
-		d[3] = { -6.0, 6.0, -4.0 };
+	glRotated(rot, 0, 1, 0);
+	//glRotated(30, 1, 0, 0);
+	//glRotated(90, 0, 1, 0);
 
-	GLfloat a2[3] = { 0.0, 0.0, 0.0 },
-		b2[3] = { 4.0, 0.0, 0.0 },
-		c2[3] = { 2.0, 0.0, 0.1 },
-		d2[3] = { 2.0, 4.0, 1.0 };
-
-	tetraedar(a, b, c, d);
+	
+	
 
 	float temeA[3] = { -6.0, -6.0, 0.0 };
 	float temeB[3] = { -2.0, 0.0 , 0.0 };
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
-
-	//mockTrougao(temeA, temeB, temeC);
 
 	crtajMash();
 
@@ -330,8 +372,30 @@ int main(int argc, char** argv)
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("subdivizija");
+
+	GLfloat a[3] = { 0.0, 4.0, 0.0 },
+		b[3] = { 0.0, 0.0, -7.0 },
+		c[3] = { 4.0, 7.0, 6.0 },
+		d[3] = { -6.0, 6.0, -4.0 };
+
+	GLfloat a2[3] = { 0.0, 0.0, 0.0 },
+		b2[3] = { 4.0, 0.0, 0.0 },
+		c2[3] = { 2.0, 0.0, 0.1 },
+		d2[3] = { 2.0, 4.0, 1.0 };
+
+	GLfloat a3[3] = { -2.0, 2.0, -2.0 },
+		b3[3] = { -2.0, -2.0, 2.0 },
+		c3[3] = { 2.0, 2.0, 2.0 },
+		d3[3] = { 2.0, -2.0, -2.0 };
+
+
+	tetraedar(a3, b3, c3, d3);
+
+
+
 	glutDisplayFunc(display);
 	//glutReshapeFunc(winReshape);
+	glutTimerFunc(100, update, 0);
 	myInit();
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();

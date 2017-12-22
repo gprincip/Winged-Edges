@@ -25,7 +25,6 @@ void Cvor::azurirajCvorove(){
 	Ivica *temp = this->e;
 	std::vector<Cvor*> cvorovi;
 
-	//beskonacna petlja
 	do{
 		cvorovi.push_back(temp->sled->sled->v);
 		temp = temp->preth->eSym;

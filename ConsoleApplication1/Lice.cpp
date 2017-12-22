@@ -20,6 +20,7 @@ return ret;
 
 
 void Lice::deli() {
+
 		while (true) {
 
 			Ivica *e1 = e;
