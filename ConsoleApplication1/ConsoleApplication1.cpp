@@ -103,6 +103,38 @@ void crtajMash() {
 	glFlush();
 }
 
+void crtajMash2() {
+
+	float r, g, b;
+
+	for (int i = 0; i < mash->lica.size(); i++) {
+
+		r = ((float)rand() / RAND_MAX);
+		g = ((float)rand() / RAND_MAX);
+		b = ((float)rand() / RAND_MAX);
+
+		Ivica *iv = mash->lica[i]->e;
+
+		glColor3f(r, g, b);
+		glPointSize(10);
+
+		glBegin(GL_TRIANGLES);
+		int s = 0;
+		do {
+			glVertex3f(iv->v->x, iv->v->y, iv->v->z);
+
+			iv = iv->sled;
+			s++;
+		} while (iv != mash->lica[i]->e);
+
+		cout << s << endl;
+
+		glEnd();
+
+		
+	}
+}
+
 void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 
 	Ivica *e1 = mash->ivice[1];
@@ -296,7 +328,7 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	//test(temeA , temeB , temeC , temeD); 
 	
 	int k = 0;
-	while (k < 1) {
+	while (k < 4) {
 		k++;
 
 		vector<Ivica*> ivice = mash->ivice;
@@ -320,7 +352,6 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 			cvorovi[i]->azurirajCvorove();
 		}
 		
-
 		vector<Lice*> lica = mash->lica;
 		for (int i = 0; i < lica.size(); i++) {
 			lica[i]->deli();
@@ -333,6 +364,155 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	}
 	
 }
+
+//****************Test trouglovi*****************
+
+void trouglovi() {
+
+	Cvor *a = new Cvor(-2.0, -2.0, 0);
+	Cvor *b = new Cvor(2.0, -2.0, 0);
+	Cvor *c = new Cvor(0.0, 2.0, 0);
+	Cvor *d = new Cvor(-4.0, 2.0, 0);
+
+	Ivica *e1 = new Ivica(a, NULL, NULL, NULL, NULL, mash);
+	Ivica *e2 = new Ivica(b, NULL, NULL, e1, NULL, mash);
+	Ivica *e3 = new Ivica(c, NULL, NULL, e2, e1, mash);
+	Ivica *e1Sym = new Ivica(a, NULL, e1, NULL, NULL, mash);
+	Ivica *e2Sym = new Ivica(b, NULL, e2, NULL, NULL, mash);
+	Ivica *e3Sym = new Ivica(a, NULL, e3, NULL, NULL, mash);
+	Ivica *e4 = new Ivica(c, NULL, NULL, e3Sym, NULL, mash);
+	Ivica *e5 = new Ivica(d, NULL, NULL, e4, e3Sym, mash);
+	Ivica *e5Sym = new Ivica(a, NULL, e5, NULL, NULL, mash);
+	Ivica *e4Sym = new Ivica(d, NULL, e4, NULL, NULL, mash);
+
+	Lice *l1 = new Lice(e1, mash);
+	Lice *l2 = new Lice(e3Sym, mash);
+
+	e1->l = e2->l = e3->l = l1;
+	e1->eSym = e1Sym;
+	e2->eSym = e2Sym;
+	e3->eSym = e3Sym;
+	e4->eSym = e4Sym;
+	e5->eSym = e5Sym;
+
+	e1->sled = e2;
+	e1->preth = e3;
+	e2->sled = e3;
+
+	e4->l = e5->l = e3Sym->l = l2;
+	e3Sym->sled = e4;
+	e3Sym->preth = e5;
+	e4->sled = e5;
+
+	vector<Ivica*> ivice; vector<Cvor*> cvorovi; vector<Lice*> lica;
+	ivice.push_back(e1);
+	ivice.push_back(e2);
+	ivice.push_back(e3);
+	ivice.push_back(e4);
+	ivice.push_back(e5);
+	ivice.push_back(e1Sym);
+	ivice.push_back(e2Sym);
+	ivice.push_back(e3Sym);
+	ivice.push_back(e4Sym);
+	ivice.push_back(e5Sym);
+
+	cvorovi.push_back(a);
+	cvorovi.push_back(b);
+	cvorovi.push_back(c);
+	cvorovi.push_back(d);
+
+	lica.push_back(l1);
+	lica.push_back(l2);
+
+	//deljenje ivice;
+
+	Cvor *c1 = e1->v; 
+	Cvor *c2 = e1->sled->sled->v;
+	Cvor *c3 = e1->sled->v;
+	Cvor *c4 = e1->preth->eSym->sled->sled->v;
+
+	//crtanje tacaka na osnovu kojih se racunaju koordinate novog cvora
+	glPointSize(3);
+	glBegin(GL_POINTS);
+
+	glVertex3f(c1->x, c1->y, c1->z);
+	glVertex3f(c2->x, c2->y, c2->z);
+	glVertex3f(c3->x, c3->y, c3->z);
+	glVertex3f(c4->x, c4->y, c4->z);
+
+	glEnd();
+
+	Cvor *cn = new Cvor(NULL);
+	Ivica *en = new Ivica(c, e1->l, NULL, e1, e1->sled, mash);
+	Ivica *enSym = new Ivica(c, e1->eSym->l, e1, e1->eSym, e1->eSym->sled, mash);
+
+	cn->e = en;
+
+	e1->sled = en;
+	e1->eSym = enSym;
+
+	e1->eSym->sled = enSym;
+	enSym->eSym = e1;
+
+	en->sled->preth = en;
+	enSym->sled->preth = enSym;
+
+	cn->x += c1->x * (3.0 / 8.0);
+	cn->x += c2->x * (3.0 / 8.0);
+	cn->x += c3->x * (1.0 / 8.0);
+	cn->x += c4->x * (1.0 / 8.0);
+
+	cn->y += c1->y * (3.0 / 8.0);
+	cn->y += c2->y * (3.0 / 8.0);
+	cn->y += c3->y * (1.0 / 8.0);
+	cn->y += c4->y * (1.0 / 8.0);
+
+	cn->z += c1->z * (3.0 / 8.0);
+	cn->z += c2->z * (3.0 / 8.0);
+	cn->z += c3->z * (1.0 / 8.0);
+	cn->z += c4->z * (1.0 / 8.0);
+
+	//crtanje nove tacke
+
+	glColor3f(1, 0, 0);
+	glBegin(GL_POINTS);
+
+	glVertex3f(cn->x, cn->y, cn->z);
+
+	glEnd();
+
+	//crtanje
+
+		float r, g, bl;
+
+		for (int i = 0; i < lica.size(); i++) {
+
+			r = ((float)rand() / RAND_MAX);
+			g = ((float)rand() / RAND_MAX);
+			bl = ((float)rand() / RAND_MAX);
+
+			Ivica *iv = lica[i]->e;
+
+			glColor3f(r, g, bl);
+			glPointSize(10);
+
+			glBegin(GL_TRIANGLES);
+			int s = 0;
+			do {
+				glVertex3f(iv->v->x, iv->v->y, iv->v->z);
+				cout << iv->v->x << " , " << iv->v->y << " , " << iv->v->z << endl;
+				iv = iv->sled;
+				s++;
+			} while (iv != lica[i]->e);
+
+			//cout << s << endl;
+
+			glEnd();
+		}
+
+	}
+
+//***********************************************
 
 int rot = 0;
 void update(int value) {
@@ -354,15 +534,15 @@ void display() {
 	//glRotated(30, 1, 0, 0);
 	//glRotated(90, 0, 1, 0);
 
-	
-	
-
 	float temeA[3] = { -6.0, -6.0, 0.0 };
 	float temeB[3] = { -2.0, 0.0 , 0.0 };
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
 
-	crtajMash();
+	//crtajMash2();
 
+	trouglovi();
+
+	glFlush();
 }
 
 int main(int argc, char** argv)
@@ -389,13 +569,12 @@ int main(int argc, char** argv)
 		d3[3] = { 2.0, -2.0, -2.0 };
 
 
-	tetraedar(a3, b3, c3, d3);
-
+	//tetraedar(a3, b3, c3, d3);
 
 
 	glutDisplayFunc(display);
 	//glutReshapeFunc(winReshape);
-	glutTimerFunc(100, update, 0);
+	//glutTimerFunc(100, update, 0);
 	myInit();
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();
