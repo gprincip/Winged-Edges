@@ -39,9 +39,8 @@ public:
 		c->e = en;
 
 		this->sled = en;
-		this->eSym = enSym;
-
 		eSym->sled = enSym;
+		this->eSym = enSym;
 		eSym->eSym = en;
 
 		en->sled->preth = en;

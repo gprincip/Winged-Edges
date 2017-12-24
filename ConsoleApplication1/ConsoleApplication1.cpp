@@ -54,9 +54,9 @@ void trougao(float *a, float *b, float *c) {
 void podesiKoordinateCvora(Cvor *c) {
 
 	Cvor *levo = c->e->preth->v;
-	Cvor *desno = c->e->sled->sled->v;
-	Cvor *gore = c->e->preth->preth->v;
-	Cvor *dole = c->e->eSym->sled->sled->sled->v;
+	Cvor *desno = c->e->sled->v;
+	Cvor *gore = c->e->preth->preth->preth->v;
+	Cvor *dole = c->e->eSym->preth->preth->v;
 
 	c->x += levo->x * (3.0 / 8.0);
 	c->x += desno->x * (3.0 / 8.0);
@@ -127,7 +127,7 @@ void crtajMash2() {
 			s++;
 		} while (iv != mash->lica[i]->e);
 
-		cout << s << endl;
+		//cout << s << endl;
 
 		glEnd();
 
@@ -137,7 +137,7 @@ void crtajMash2() {
 
 void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 
-	Ivica *e1 = mash->ivice[1];
+	Ivica *e1 = mash->ivice[0];
 
 	//***************************************************
 	Cvor *c1 = e1->v;
@@ -146,7 +146,7 @@ void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 	Cvor *c4 = e1->eSym->sled->sled->v;
 
 	glColor3f(1, 0, 0);
-	glLineWidth(3);
+	glLineWidth(5);
 	glBegin(GL_LINE_STRIP);
 
 	glVertex3f(e1->v->x, e1->v->y, e1->v->z);
@@ -155,10 +155,10 @@ void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 	glVertex3f(e1->sled->sled->sled->v->x, e1->sled->sled->sled->v->y, e1->sled->sled->sled->v->z);*/
 
 	glEnd();
-	glFlush();
+	//glFlush();
 
 	glColor3f(1, 0, 0);
-	glPointSize(10);
+	glPointSize(100);
 	glBegin(GL_POINTS);
 
 	glVertex3f(c1->x , c1->y , c1->z);
@@ -219,6 +219,21 @@ void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 	mash->cvorovi.push_back(c);
 	mash->ivice.push_back(en);
 	mash->ivice.push_back(enSym);
+
+}
+
+
+void brojIvicaULicima() {
+
+	for (int i = 0; i < mash->lica.size(); i++) {
+		int br = 0;
+		Ivica *temp = mash->lica[i]->e;
+		do {
+			br++;
+			temp = temp->sled;
+		} while (temp != mash->lica[i]->e);
+		cout << "Broj ivica: " << br << endl;
+	}
 
 }
 
@@ -328,7 +343,7 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	//test(temeA , temeB , temeC , temeD); 
 	
 	int k = 0;
-	while (k < 4) {
+	while (k < 2) {
 		k++;
 
 		vector<Ivica*> ivice = mash->ivice;
@@ -361,9 +376,11 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 			mash->ivice[i]->podeljena = false;
 		}
 
+		//brojIvicaULicima();
 	}
 	
 }
+
 
 //****************Test trouglovi*****************
 
@@ -538,9 +555,9 @@ void display() {
 	float temeB[3] = { -2.0, 0.0 , 0.0 };
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
 
-	//crtajMash2();
+	crtajMash2();
 
-	trouglovi();
+	//trouglovi();
 
 	glFlush();
 }
@@ -569,12 +586,12 @@ int main(int argc, char** argv)
 		d3[3] = { 2.0, -2.0, -2.0 };
 
 
-	//tetraedar(a3, b3, c3, d3);
+	tetraedar(a3, b3, c3, d3);
 
 
 	glutDisplayFunc(display);
 	//glutReshapeFunc(winReshape);
-	//glutTimerFunc(100, update, 0);
+	glutTimerFunc(100, update, 0);
 	myInit();
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();

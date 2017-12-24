@@ -20,9 +20,9 @@ return ret;
 
 
 void Lice::deli() {
-
+	int k = 0;
 		while (true) {
-
+			k++;
 			Ivica *e1 = e;
 			Ivica *e2 = e1->sled;
 			Ivica *e3 = e2->sled;
@@ -60,4 +60,5 @@ void Lice::deli() {
 			this->e = en1;
 			podeljeno = true;
 		}
+		cout << k << endl;
 }
