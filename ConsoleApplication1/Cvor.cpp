@@ -2,6 +2,9 @@
 #include"Ivica.h"
 #include"Lice.h"
 #include<vector>
+#include<math.h>
+
+# define M_PI           3.14159265358979323846
 
 std::vector<Lice*> Cvor::svaLica(Cvor *c){
 
@@ -42,10 +45,12 @@ void Cvor::azurirajCvorove(){
 
 	}
 
+	float k = cvorovi.size();
+	float omega = 1 / k * (5 / 8 - pow((3 / 8 + 1 / 4 * cos(2 * M_PI) / k), 2));
+
 	float beta = 3.0 / (8 * cvorovi.size());
 
 	this->x = beta * (sumax)+(1 - cvorovi.size() * beta) * this->x;
 	this->y = beta * (sumay)+(1 - cvorovi.size() * beta) * this->y;
 	this->z = beta * (sumaz)+(1 - cvorovi.size() * beta) * this->z;
-
 }

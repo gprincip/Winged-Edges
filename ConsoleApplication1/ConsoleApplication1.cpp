@@ -34,7 +34,7 @@ static void myInit()
 
 void winReshape(GLint w, GLint h)
 {
-	
+
 	mash->obrisiPodatke();
 
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
@@ -72,7 +72,6 @@ void podesiKoordinateCvora(Cvor *c) {
 	c->z += desno->z * (3.0 / 8.0);
 	c->z += gore->z * (1.0 / 8.0);
 	c->z += dole->z * (1.0 / 8.0);
-
 }
 
 void crtajMash() {
@@ -131,11 +130,11 @@ void crtajMash2() {
 
 		glEnd();
 
-		
+
 	}
 }
 
-void test(float *temeA , float *temeB , float *temeC , float *temeD) {
+void test(float *temeA, float *temeB, float *temeC, float *temeD) {
 
 	Ivica *e1 = mash->ivice[0];
 
@@ -161,7 +160,7 @@ void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 	glPointSize(100);
 	glBegin(GL_POINTS);
 
-	glVertex3f(c1->x , c1->y , c1->z);
+	glVertex3f(c1->x, c1->y, c1->z);
 	glVertex3f(c2->x, c2->y, c2->z);
 	glVertex3f(c3->x, c3->y, c3->z);
 	glVertex3f(c4->x, c4->y, c4->z);
@@ -192,10 +191,10 @@ void test(float *temeA , float *temeB , float *temeC , float *temeD) {
 	cout << "x4: " << c4->x << "   ";
 	cout << endl;
 
-	c->x += c1->x * (3.0 / 8.0); 
+	c->x += c1->x * (3.0 / 8.0);
 	c->x += c2->x * (3.0 / 8.0);
 	c->x += c3->x * (1.0 / 8.0);
-	c->x += c4->x * (1.0 / 8.0); 
+	c->x += c4->x * (1.0 / 8.0);
 
 	c->y += c1->y * (3.0 / 8.0);
 	c->y += c2->y * (3.0 / 8.0);
@@ -236,6 +235,23 @@ void brojIvicaULicima() {
 	}
 
 }
+
+void nacrtajIviceLica(Lice *l) {
+	Ivica *i = l->e;
+	glLineWidth(5);
+	glColor3f(1, 0, 0);
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(i->v->x, i->v->y, i->v->z);
+	do {
+		i = i->sled;
+		glVertex3f(i->v->x, i->v->y, i->v->z);
+	} while (i != l->e);
+
+	glEnd();
+	glFlush();
+}
+
+int deljenje = 0;
 
 void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 
@@ -341,14 +357,14 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	mash->lica.push_back(f4);
 
 	//test(temeA , temeB , temeC , temeD); 
-	
+
 	int k = 0;
-	while (k < 2) {
+	while (k < 1) {
 		k++;
 
 		vector<Ivica*> ivice = mash->ivice;
 		vector<Cvor*> cvorovi = mash->cvorovi; //stari cvorovi
-		
+
 		for (int i = 0; i < ivice.size(); i++) {
 			if (!ivice[i]->podeljena) {
 				ivice[i]->podeljena = true;
@@ -366,7 +382,7 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		for (int i = 0; i < cvorovi.size(); i++) {
 			cvorovi[i]->azurirajCvorove();
 		}
-		
+
 		vector<Lice*> lica = mash->lica;
 		for (int i = 0; i < lica.size(); i++) {
 			lica[i]->deli();
@@ -375,10 +391,34 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		for (int i = 0; i < mash->ivice.size(); i++) {
 			mash->ivice[i]->podeljena = false;
 		}
-
 		//brojIvicaULicima();
 	}
-	
+
+	/*deljenje = 6;
+
+	Lice *l = mash->lica[deljenje];
+	Ivica *i = l->e;
+	vector<Ivica*> iv;
+
+	do {
+		iv.push_back(i);
+		i = i->sled;
+	} while (i != l->e);
+
+	for (int i = 0; i < iv.size(); i++)
+		iv[i]->deli();
+
+	podesiKoordinateCvora(i->sled->v);
+	podesiKoordinateCvora(i->sled->sled->sled->v);
+	podesiKoordinateCvora(i->sled->sled->sled->sled->sled->v);
+
+	i->v->azurirajCvorove();
+	i->sled->sled->v->azurirajCvorove();
+	i->sled->sled->sled->sled->v->azurirajCvorove();
+
+	l->deli();*/
+
+
 }
 
 
@@ -390,20 +430,32 @@ void trouglovi() {
 	Cvor *b = new Cvor(2.0, -2.0, 0);
 	Cvor *c = new Cvor(0.0, 2.0, 0);
 	Cvor *d = new Cvor(-4.0, 2.0, 0);
+	Cvor *ve = new Cvor(4.0, 2.0, 0);
+	Cvor *vf = new Cvor(0.0, -6.0, 0);
 
 	Ivica *e1 = new Ivica(a, NULL, NULL, NULL, NULL, mash);
 	Ivica *e2 = new Ivica(b, NULL, NULL, e1, NULL, mash);
 	Ivica *e3 = new Ivica(c, NULL, NULL, e2, e1, mash);
-	Ivica *e1Sym = new Ivica(a, NULL, e1, NULL, NULL, mash);
-	Ivica *e2Sym = new Ivica(b, NULL, e2, NULL, NULL, mash);
+	Ivica *e1Sym = new Ivica(b, NULL, e1, NULL, NULL, mash);
+	Ivica *e2Sym = new Ivica(c, NULL, e2, NULL, NULL, mash);
 	Ivica *e3Sym = new Ivica(a, NULL, e3, NULL, NULL, mash);
 	Ivica *e4 = new Ivica(c, NULL, NULL, e3Sym, NULL, mash);
 	Ivica *e5 = new Ivica(d, NULL, NULL, e4, e3Sym, mash);
 	Ivica *e5Sym = new Ivica(a, NULL, e5, NULL, NULL, mash);
 	Ivica *e4Sym = new Ivica(d, NULL, e4, NULL, NULL, mash);
+	Ivica *e6 = new Ivica(ve, NULL, NULL, NULL, e2Sym, mash);
+	Ivica *e7 = new Ivica(b, NULL, NULL, e2Sym, e6, mash);
+	Ivica *e8 = new Ivica(vf, NULL, NULL, NULL, e1Sym, mash);
+	Ivica *e9 = new Ivica(a, NULL, NULL, e1Sym, e8, mash);
+	Ivica *e6Sym = new Ivica(c, NULL, e6, NULL, NULL, mash);
+	Ivica *e7Sym = new Ivica(ve, NULL, e7, NULL, NULL, mash);
+	Ivica *e8Sym = new Ivica(b, NULL, e8, NULL, NULL, mash);
+	Ivica *e9Sym = new Ivica(vf, NULL, e9, NULL, NULL, mash);
 
 	Lice *l1 = new Lice(e1, mash);
 	Lice *l2 = new Lice(e3Sym, mash);
+	Lice *l3 = new Lice(e7, mash);
+	Lice *l4 = new Lice(e8, mash);
 
 	e1->l = e2->l = e3->l = l1;
 	e1->eSym = e1Sym;
@@ -411,6 +463,15 @@ void trouglovi() {
 	e3->eSym = e3Sym;
 	e4->eSym = e4Sym;
 	e5->eSym = e5Sym;
+	e6->eSym = e6Sym;
+	e7->eSym = e7Sym;
+	e8->eSym = e8Sym;
+	e9->eSym = e9Sym;
+
+	e6->l = e7->l = l3;
+	e9->l = e8->l = l4;
+	e6->preth = e7;
+	e8->preth = e9;
 
 	e1->sled = e2;
 	e1->preth = e3;
@@ -421,29 +482,51 @@ void trouglovi() {
 	e3Sym->preth = e5;
 	e4->sled = e5;
 
+	e2Sym->l = l3;
+	e1Sym->l = l4;
+
+	e2Sym->sled = e7;
+	e2Sym->preth = e6;
+	e1Sym->sled = e9;
+	e1Sym->preth = e8;
+
 	vector<Ivica*> ivice; vector<Cvor*> cvorovi; vector<Lice*> lica;
-	ivice.push_back(e1);
-	ivice.push_back(e2);
-	ivice.push_back(e3);
-	ivice.push_back(e4);
-	ivice.push_back(e5);
-	ivice.push_back(e1Sym);
-	ivice.push_back(e2Sym);
-	ivice.push_back(e3Sym);
-	ivice.push_back(e4Sym);
-	ivice.push_back(e5Sym);
+	mash->ivice.push_back(e1);
+	mash->ivice.push_back(e2);
+	mash->ivice.push_back(e3);
+	mash->ivice.push_back(e4);
+	mash->ivice.push_back(e5);
+	mash->ivice.push_back(e1Sym);
+	mash->ivice.push_back(e2Sym);
+	mash->ivice.push_back(e3Sym);
+	mash->ivice.push_back(e4Sym);
+	mash->ivice.push_back(e5Sym);
+	mash->ivice.push_back(e6);
+	mash->ivice.push_back(e7);
+	mash->ivice.push_back(e8);
+	mash->ivice.push_back(e9);
+	mash->ivice.push_back(e6Sym);
+	mash->ivice.push_back(e7Sym);
+	mash->ivice.push_back(e8Sym);
+	mash->ivice.push_back(e9Sym);
 
-	cvorovi.push_back(a);
-	cvorovi.push_back(b);
-	cvorovi.push_back(c);
-	cvorovi.push_back(d);
+	mash->cvorovi.push_back(a);
+	mash->cvorovi.push_back(b);
+	mash->cvorovi.push_back(c);
+	mash->cvorovi.push_back(d);
+	mash->cvorovi.push_back(ve);
+	mash->cvorovi.push_back(vf);
 
-	lica.push_back(l1);
-	lica.push_back(l2);
+	mash->lica.push_back(l1);
+	mash->lica.push_back(l2);
+	mash->lica.push_back(l3);
+	mash->lica.push_back(l4);
+
+	/*
 
 	//deljenje ivice;
 
-	Cvor *c1 = e1->v; 
+	Cvor *c1 = e1->v;
 	Cvor *c2 = e1->sled->sled->v;
 	Cvor *c3 = e1->sled->v;
 	Cvor *c4 = e1->preth->eSym->sled->sled->v;
@@ -498,36 +581,76 @@ void trouglovi() {
 
 	glEnd();
 
-	//crtanje
+	*/
 
-		float r, g, bl;
+	//deljenje
+	int k = 0;
+	while (k < 1) {
+		k++;
 
-		for (int i = 0; i < lica.size(); i++) {
+		vector<Ivica*> ivice = mash->ivice;
+		vector<Cvor*> cvorovi = mash->cvorovi; //stari cvorovi
 
-			r = ((float)rand() / RAND_MAX);
-			g = ((float)rand() / RAND_MAX);
-			bl = ((float)rand() / RAND_MAX);
-
-			Ivica *iv = lica[i]->e;
-
-			glColor3f(r, g, bl);
-			glPointSize(10);
-
-			glBegin(GL_TRIANGLES);
-			int s = 0;
-			do {
-				glVertex3f(iv->v->x, iv->v->y, iv->v->z);
-				cout << iv->v->x << " , " << iv->v->y << " , " << iv->v->z << endl;
-				iv = iv->sled;
-				s++;
-			} while (iv != lica[i]->e);
-
-			//cout << s << endl;
-
-			glEnd();
+		for (int i = 0; i < ivice.size(); i++) {
+			if (!ivice[i]->podeljena) {
+				ivice[i]->podeljena = true;
+				ivice[i]->eSym->podeljena = true;
+				ivice[i]->deli();
+			}
 		}
 
+		for (int i = 0; i < mash->noviCvorovi.size(); i++) {
+			podesiKoordinateCvora(mash->noviCvorovi[i]);
+		}
+
+		mash->noviCvorovi.erase(mash->noviCvorovi.begin(), mash->noviCvorovi.end());
+
+		for (int i = 0; i < cvorovi.size(); i++) {
+			cvorovi[i]->azurirajCvorove();
+		}
+
+		vector<Lice*> lica = mash->lica;
+		for (int i = 0; i < lica.size(); i++) {
+			lica[i]->deli();
+		}
+
+		for (int i = 0; i < mash->ivice.size(); i++) {
+			mash->ivice[i]->podeljena = false;
+		}
+		//brojIvicaULicima();
 	}
+
+	
+	//crtanje
+
+	float r, g, bl;
+
+	for (int i = 0; i < lica.size(); i++) {
+
+		r = ((float)rand() / RAND_MAX);
+		g = ((float)rand() / RAND_MAX);
+		bl = ((float)rand() / RAND_MAX);
+
+		Ivica *iv = lica[i]->e;
+
+		glColor3f(r, g, bl);
+		glPointSize(10);
+
+		glBegin(GL_TRIANGLES);
+		int s = 0;
+		do {
+			glVertex3f(iv->v->x, iv->v->y, iv->v->z);
+			cout << iv->v->x << " , " << iv->v->y << " , " << iv->v->z << endl;
+			iv = iv->sled;
+			s++;
+		} while (iv != lica[i]->e);
+
+		//cout << s << endl;
+
+		glEnd();
+	}
+
+}
 
 //***********************************************
 
@@ -559,7 +682,7 @@ void display() {
 
 	//trouglovi();
 
-	glFlush();
+	nacrtajIviceLica(mash->lica[deljenje]);
 }
 
 int main(int argc, char** argv)
@@ -585,10 +708,14 @@ int main(int argc, char** argv)
 		c3[3] = { 2.0, 2.0, 2.0 },
 		d3[3] = { 2.0, -2.0, -2.0 };
 
+	GLfloat a4[3] = { -2.0, 2.0, 0.0 },
+		b4[3] = { -2.0, -2.0, 0.0 },
+		c4[3] = { 2.0, 2.0, 0.0 },
+		d4[3] = { 2.0, -2.0, 0.0 };
 
+	//tetraedar(a4, b4, c4, d4);
 	tetraedar(a3, b3, c3, d3);
-
-
+	
 	glutDisplayFunc(display);
 	//glutReshapeFunc(winReshape);
 	glutTimerFunc(100, update, 0);
