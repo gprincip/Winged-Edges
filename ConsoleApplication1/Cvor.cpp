@@ -50,7 +50,12 @@ void Cvor::azurirajCvorove(){
 
 	float beta = 3.0 / (8 * cvorovi.size());
 
-	this->x = beta * (sumax)+(1 - cvorovi.size() * beta) * this->x;
+	/*this->x = beta * (sumax)+(1 - cvorovi.size() * beta) * this->x;
 	this->y = beta * (sumay)+(1 - cvorovi.size() * beta) * this->y;
-	this->z = beta * (sumaz)+(1 - cvorovi.size() * beta) * this->z;
+	this->z = beta * (sumaz)+(1 - cvorovi.size() * beta) * this->z;*/
+
+	this->x = (1 - omega*k) *this->x + omega * sumax;
+	this->y = (1 - omega*k) *this->y + omega * sumay;
+	this->z = (1 - omega*k) *this->z + omega * sumaz;
+	
 }

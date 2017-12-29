@@ -682,7 +682,29 @@ void display() {
 
 	//trouglovi();
 
-	nacrtajIviceLica(mash->lica[deljenje]);
+	//nacrtajIviceLica(mash->lica[deljenje]);
+
+	Lice *l = mash->lica[1];
+	Ivica *i = l->e;
+
+	glLineWidth(5);
+	glColor3f(1, 0, 0);
+
+	//i = i->eSym->eSym;
+
+	glBegin(GL_LINE_STRIP);
+
+	glVertex3f(i->v->x, i->v->y, i->v->z);
+	glVertex3f(i->preth->v->x, i->preth->v->y, i->preth->v->z);
+	glVertex3f(i->preth->preth->v->x, i->preth->preth->v->y, i->preth->preth->v->z);
+	glVertex3f(i->preth->preth->preth->v->x, i->preth->preth->preth->v->y, i->preth->preth->preth->v->z);
+
+
+	glEnd();
+
+	glFlush();
+
+
 }
 
 int main(int argc, char** argv)

@@ -59,6 +59,7 @@ void Lice::deli() {
 
 			this->e = en1;
 			podeljeno = true;
+
 		}
 		cout << k << endl;
 }
