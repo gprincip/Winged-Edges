@@ -16,6 +16,8 @@ public:
 	Mash *mash;
 	bool podeljena;
 
+	float xpom, ypom, zpom;
+
 	Ivica(Cvor *v = NULL, Lice *l = NULL, Ivica *eSym = NULL, Ivica *preth = NULL, Ivica *sled = NULL, Mash *mash = NULL) {
 		this->v = v;
 		this->l = l;
@@ -24,6 +26,7 @@ public:
 		this->sled = sled;
 		this->mash = mash;
 		podeljena = false;
+		xpom = ypom = zpom = 0.0;
 	}
 
 	void dodaj(Ivica *ivica);
@@ -33,6 +36,14 @@ public:
 	void deli() {
 
 		Cvor *c = new Cvor(NULL); //treba da bude od en
+		xpom = sled->v->x;
+		ypom = sled->v->y;
+		zpom = sled->v->z;
+
+		eSym->xpom = eSym->sled->v->x;
+		eSym->ypom = eSym->sled->v->y;
+		eSym->zpom = eSym->sled->v->z;
+
 		Ivica *en = new Ivica(c, l, eSym, this, sled, mash);
 		Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled, mash);
 
@@ -48,9 +59,6 @@ public:
 
 		//Koordinate cvora
 		//zapamti stare vrednosti
-		c->xpom = c->x;
-		c->ypom = c->y;
-		c->zpom = c->z;
 
 		/*c->x += this->v->x * (3.0 / 8.0); cout << "x1: " << this->v->x << "   ";
 		c->x += sled->sled->v->x * (3.0 / 8.0); cout << "x2: " << sled->sled->v->x << "   ";
@@ -76,8 +84,5 @@ public:
 
 	}
 
-	void podesiKoordinateCvora(Cvor *c) {
-
-	}
 
 };

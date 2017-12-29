@@ -46,7 +46,7 @@ void Cvor::azurirajCvorove(){
 	}
 
 	float k = cvorovi.size();
-	float omega = 1 / k * (5 / 8 - pow((3 / 8 + 1 / 4 * cos(2 * M_PI) / k), 2));
+	float omega = 1.0 / k * (5.0 / 8.0 - pow((3.0 / 8.0 + 1.0 / 4.0 * cos(2.0 * M_PI) / k), 2));
 
 	float beta = 3.0 / (8 * cvorovi.size());
 

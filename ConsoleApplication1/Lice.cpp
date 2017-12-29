@@ -61,5 +61,5 @@ void Lice::deli() {
 			podeljeno = true;
 
 		}
-		cout << k << endl;
+		//cout << k << endl;
 }
