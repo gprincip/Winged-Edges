@@ -21,12 +21,25 @@ float height = 500.0;
 
 Mash *mash = new Mash;
 
+float rotacijaSvetla1 = 0.0;
+
 static void myInit()
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat mat_shininess[] = { 50.0 };
+	GLfloat light_position[] = { 0.0, 0.0, -7, 1.0 };
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 }
 
 void winReshape(GLint w, GLint h)
@@ -88,7 +101,8 @@ void crtajMash() {
 		glBegin(GL_TRIANGLES);
 		glNormal3fv(mash->lica[i]->vektorNormale);
 		do {
-			glVertex3f(iv->v->x, iv->v->y, iv->v->z);
+			//glNormal3fv(iv->v->vektorNormale);
+			glVertex3f(iv->v->x, iv->v->y, iv->v->z); //TODO: dodaj vektor normale za cvorove
 			iv = iv->sled;
 		} while (iv != mash->lica[i]->e);
 		glEnd();
@@ -278,7 +292,7 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	}
 
 	int k = 0;
-	while (k < 1){
+	while (k < 2){
 		k++;
 
 		vector<Ivica*> ivice = mash->ivice;
@@ -336,7 +350,7 @@ bool rotiraj = true;
 int rot = 0;
 void update(int value) {
 
-	if(rotiraj) rot = 1;
+	if (rotiraj) rot = 1;
 	else rot = 0;
 
 	glutPostRedisplay();
