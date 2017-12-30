@@ -25,37 +25,28 @@ return ret;
 
 void Cvor::azurirajCvorove(){
 
-	Ivica *temp = this->e;
-	std::vector<Cvor*> cvorovi;
+	int k = brojSuseda;
 
-	do{
-		cvorovi.push_back(temp->sled->sled->v);
-		temp = temp->preth->eSym;
-	} while (temp != this->e);
-
-	float sumax = 0;
-	float sumay = 0;
-	float sumaz = 0;
-
-	for (int i = 0; i < cvorovi.size(); i++){
-
-		sumax += cvorovi[i]->x;
-		sumay += cvorovi[i]->y;
-		sumaz += cvorovi[i]->z;
-
-	}
-
-	float k = cvorovi.size();
 	float omega = 1.0 / k * (5.0 / 8.0 - pow((3.0 / 8.0 + 1.0 / 4.0 * cos(2.0 * M_PI) / k), 2));
-
-	float beta = 3.0 / (8 * cvorovi.size());
-
-	/*this->x = beta * (sumax)+(1 - cvorovi.size() * beta) * this->x;
-	this->y = beta * (sumay)+(1 - cvorovi.size() * beta) * this->y;
-	this->z = beta * (sumaz)+(1 - cvorovi.size() * beta) * this->z;*/
 
 	this->x = (1 - omega*k) *this->x + omega * sumax;
 	this->y = (1 - omega*k) *this->y + omega * sumay;
 	this->z = (1 - omega*k) *this->z + omega * sumaz;
 	
+}
+
+void Cvor::izracunajSumuSusednihCvorova() {
+
+	Ivica *i = this->e;
+
+	do {
+		sumax += i->sled->v->x;
+		sumay += i->sled->v->y;
+		sumaz += i->sled->v->z;
+		i = i->preth->eSym;
+		brojSuseda++;
+	} while (i != this->e);
+
+	cout << brojSuseda << endl;
+
 }

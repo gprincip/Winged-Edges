@@ -9,11 +9,14 @@ public:
 	Ivica *e;
 	Mash *mash;
 	bool podeljeno;
-
+	float r, g, b;
 	Lice(Ivica *e = NULL, Mash *mash = NULL) {
 		this->e = e;
 		this->mash = mash;
 		podeljeno = false;
+		r = ((float)rand() / RAND_MAX);
+		g = ((float)rand() / RAND_MAX);
+		b = ((float)rand() / RAND_MAX);
 	}
 
 	std::vector<Cvor*> sviCvorovi();

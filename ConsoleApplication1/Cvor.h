@@ -11,20 +11,25 @@ public:
 
 	float x, y, z;
 
-	float xpom, ypom, zpom;
+	float sumax, sumay, sumaz;
+
+	int brojSuseda;
 
 	Cvor(Ivica *e = NULL){
 		this->e = e;
 	}
 
 	Cvor(float x, float y, float z){
-		this->x = xpom = x;
-		this->y = ypom = y;
-		this->z = zpom = z;
+		sumax = sumay = sumaz = 0.0;
+		this->x = x; 
+		this->y = y;
+		this->z = z;
+		brojSuseda = 0;
 	}
 
 	std::vector<Lice*> svaLica(Cvor *c);
 
 	void azurirajCvorove();
 
+	void izracunajSumuSusednihCvorova();
 };
