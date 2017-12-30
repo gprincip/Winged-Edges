@@ -15,8 +15,12 @@ public:
 
 	int brojSuseda;
 
+	float *vektorNormale; //[0] - x , [1] - y , [2] - z
+
 	Cvor(Ivica *e = NULL){
 		this->e = e;
+		vektorNormale = new float[3];
+		vektorNormale[0] = vektorNormale[1] = vektorNormale[2] = 0;
 	}
 
 	Cvor(float x, float y, float z){
@@ -25,6 +29,8 @@ public:
 		this->y = y;
 		this->z = z;
 		brojSuseda = 0;
+		vektorNormale = new float[3];
+		vektorNormale[0] = vektorNormale[1] = vektorNormale[2] = 0;
 	}
 
 	std::vector<Lice*> svaLica(Cvor *c);
@@ -32,4 +38,6 @@ public:
 	void azurirajCvorove();
 
 	void izracunajSumuSusednihCvorova();
+
+	void izracunajVektorNormale();
 };

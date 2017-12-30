@@ -50,3 +50,27 @@ void Cvor::izracunajSumuSusednihCvorova() {
 	cout << brojSuseda << endl;
 
 }
+
+void Cvor::izracunajVektorNormale() {
+
+	Ivica *e = this->e;
+
+	float sumax = 0.0;
+	float sumay = 0.0;
+	float sumaz = 0.0;
+
+	int brLica = 0;
+
+	do {
+		sumax += e->l->vektorNormale[0];
+		sumay += e->l->vektorNormale[1];
+		sumaz += e->l->vektorNormale[2];
+		e = e->preth->eSym;
+		brLica++;
+	} while (e != this->e);
+
+	this->vektorNormale[0] = sumax / brLica;
+	this->vektorNormale[1] = sumay / brLica;
+	this->vektorNormale[2] = sumaz / brLica;
+
+}

@@ -16,8 +16,8 @@
 
 using namespace std;
 
-int width = 500;
-int height = 500;
+float width = 500.0;
+float height = 500.0;
 
 Mash *mash = new Mash;
 
@@ -26,21 +26,16 @@ static void myInit()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glOrtho(-7.0, 7.0, -7.0, 7.0, -7.0, 7.0);
-	gluPerspective(40.0, 500.0 / 500.0, -7, 7);
-	gluLookAt(0, 0, 15, 0, 0, 9, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 }
 
 void winReshape(GLint w, GLint h)
 {
-
-	mash->obrisiPodatke();
-
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(40.0, (GLfloat)w / (GLfloat)h, -7, 7);
+	gluPerspective(40.0, (float)w / (float)h, -7, 7);
+	gluLookAt(0, 0, 15, 0, 0, 9, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -91,19 +86,12 @@ void crtajMash() {
 		glColor3f(mash->lica[i]->r , mash->lica[i]->g , mash->lica[i]->b);
 
 		glBegin(GL_TRIANGLES);
-		int s = 0;
+		glNormal3fv(mash->lica[i]->vektorNormale);
 		do {
 			glVertex3f(iv->v->x, iv->v->y, iv->v->z);
-
 			iv = iv->sled;
-			s++;
 		} while (iv != mash->lica[i]->e);
-
-		//cout << s << endl;
-
 		glEnd();
-
-
 	}
 
 }
@@ -285,10 +273,12 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	mash->lica.push_back(f3);
 	mash->lica.push_back(f4);
 
-	
+	for (int i = 0; i < mash->lica.size(); i++) {
+		mash->lica[i]->izracunajVektorNormale();
+	}
 
 	int k = 0;
-	while (k < 4){
+	while (k < 1){
 		k++;
 
 		vector<Ivica*> ivice = mash->ivice;
@@ -321,6 +311,14 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 
 		for (int i = 0; i < lica.size(); i++) {
 			lica[i]->deli();
+		}
+
+		for (int i = 0; i < mash->lica.size(); i++) {
+			mash->lica[i]->izracunajVektorNormale();
+		}
+
+		for (int i = 0; i < mash->cvorovi.size(); i++) {
+			mash->cvorovi[i]->izracunajVektorNormale(); 
 		}
 
 		for (int i = 0; i < mash->ivice.size(); i++) {
@@ -357,7 +355,6 @@ void display() {
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
 
 	crtajMash();
-	
 
 	//test();
 	glFlush();
@@ -411,7 +408,7 @@ int main(int argc, char** argv)
 	}
 
 	glutDisplayFunc(display);
-	//glutReshapeFunc(winReshape);
+	glutReshapeFunc(winReshape);
 	glutTimerFunc(100, update, 0);
 	glutMouseFunc(onMouseClick);
 	myInit();

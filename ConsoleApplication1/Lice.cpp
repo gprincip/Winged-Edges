@@ -20,9 +20,9 @@ return ret;
 
 
 void Lice::deli() {
-	int k = 0;
+
 		while (true) {
-			k++;
+
 			Ivica *e1 = e;
 			Ivica *e2 = e1->sled;
 			Ivica *e3 = e2->sled;
@@ -58,8 +58,24 @@ void Lice::deli() {
 			mash->lica.push_back(lnovo);
 
 			this->e = en1;
-			podeljeno = true;
 
 		}
-		//cout << k << endl;
+}
+
+void Lice::izracunajVektorNormale() {
+
+	Ivica *i = this->e;
+
+	do {
+
+		Cvor *c = i->v;
+		Cvor *cSled = i->sled->v;
+
+		vektorNormale[0] += (c->y - cSled->y)*(c->z + cSled->z);
+		vektorNormale[1] += (c->z - cSled->z)*(c->x + cSled->x);
+		vektorNormale[2] += (c->x - cSled->x)*(c->y + cSled->y);
+
+		i = i->sled;
+	} while (i != this->e);
+
 }
