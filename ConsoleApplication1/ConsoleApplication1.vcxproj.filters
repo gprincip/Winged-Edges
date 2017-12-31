@@ -65,8 +65,5 @@
     <ClCompile Include="Lice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ivica.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

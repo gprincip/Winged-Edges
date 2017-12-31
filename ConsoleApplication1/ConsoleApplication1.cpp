@@ -23,6 +23,8 @@ Mash *mash = new Mash;
 
 float rotacijaSvetla1 = 0.0;
 
+int brojSubdivizija = 3;
+
 static void myInit()
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -48,11 +50,10 @@ void winReshape(GLint w, GLint h)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(40.0, (float)w / (float)h, -7, 7);
-	gluLookAt(0, 0, 8, 0, 0, -7, 0, 1, 0);
+	gluLookAt(0, 0, 10, 0, 0, -7, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
-
 
 void podesiKoordinateCvora(Cvor *c) {
 
@@ -93,96 +94,21 @@ void nacrtajIvicu(Ivica *i) {
 void crtajMash() {
 
 	for (int i = 0; i < mash->lica.size(); i++) {
-
 		Ivica *iv = mash->lica[i]->e;
-
-		glColor3f(mash->lica[i]->r , mash->lica[i]->g , mash->lica[i]->b);
+		glColor3f(mash->lica[i]->r, mash->lica[i]->g, mash->lica[i]->b);
 
 		glBegin(GL_TRIANGLES);
 		glNormal3fv(mash->lica[i]->vektorNormale);
+
 		do {
 			glNormal3fv(iv->v->vektorNormale);
-			glVertex3f(iv->v->x, iv->v->y, iv->v->z); //TODO: dodaj vektor normale za cvorove
+			glVertex3f(iv->v->x, iv->v->y, iv->v->z);
 			iv = iv->sled;
 		} while (iv != mash->lica[i]->e);
 		glEnd();
 	}
 
 }
-
-void test() {
-
-	Cvor *c = mash->cvorovi[3];
-	Ivica *temp = c->e;
-
-	glPointSize(5);
-	glColor3f(1, 0, 0);
-
-	glBegin(GL_POINTS);
-
-	glVertex3f(c->x, c->y, c->z);
-
-	glEnd();
-
-	glColor3f(0, 1, 0);
-
-	glLineWidth(8);
-	
-	//Ovde treba da crta ivice koje polaze iz jednog cvora
-	glBegin(GL_LINES);
-
-		glVertex3f(temp->v->x, temp->v->y, temp->v->z);
-		glVertex3f(temp->sled->v->x, temp->sled->v->y, temp->sled->v->z);		
-		temp = temp->preth->eSym;
-
-		glVertex3f(temp->v->x, temp->v->y, temp->v->z);
-		glVertex3f(temp->sled->v->x, temp->sled->v->y, temp->sled->v->z);
-		temp = temp->preth->eSym;
-
-		glVertex3f(temp->v->x, temp->v->y, temp->v->z);
-		glVertex3f(temp->sled->v->x, temp->sled->v->y, temp->sled->v->z);
-		temp = temp->preth->eSym;
-
-		glVertex3f(temp->v->x, temp->v->y, temp->v->z);
-		glVertex3f(temp->sled->v->x, temp->sled->v->y, temp->sled->v->z);
-		temp = temp->preth->eSym;
-
-	glEnd();
-	glFlush();
-
-}
-
-
-void brojIvicaULicima() {
-
-	for (int i = 0; i < mash->lica.size(); i++) {
-		int br = 0;
-		Ivica *temp = mash->lica[i]->e;
-		do {
-			br++;
-			temp = temp->sled;
-		} while (temp != mash->lica[i]->e);
-		cout << "Broj ivica: " << br << endl;
-	}
-
-}
-
-void nacrtajIviceLica(Lice *l) {
-	Ivica *i = l->e;
-	glLineWidth(5);
-	glColor3f(1, 0, 0);
-	glBegin(GL_LINE_STRIP);
-	glVertex3f(i->v->x, i->v->y, i->v->z);
-	do {
-		i = i->sled;
-		glVertex3f(i->v->x, i->v->y, i->v->z);
-	} while (i != l->e);
-
-	glEnd();
-	glFlush();
-}
-
-int deljenje = 0;
 
 void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 
@@ -295,20 +221,23 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		mash->cvorovi[i]->izracunajVektorNormale();
 	}
 
+	//Subdivizija
+
 	int k = 0;
-	while (k < 3){
+	while (k < brojSubdivizija) {
 		k++;
 
+		//zapamti podatke pre subdivizije
 		vector<Ivica*> ivice = mash->ivice;
-		vector<Cvor*> cvorovi = mash->cvorovi; //stari cvorovi
+		vector<Cvor*> cvorovi = mash->cvorovi; 
 		vector<Lice*> lica = mash->lica;
 
+		//izracunaj sumu susednih cvorova pre subdivizije
 		for (int i = 0; i < cvorovi.size(); i++) {
-
 			cvorovi[i]->izracunajSumuSusednihCvorova();
-
 		}
 
+		//podeli ivice
 		for (int i = 0; i < ivice.size(); i++) {
 			if (!ivice[i]->podeljena) {
 				ivice[i]->podeljena = true;
@@ -317,41 +246,48 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 			}
 		}
 
+		//podesi koordinate novih cvorova
 		for (int i = 0; i < mash->noviCvorovi.size(); i++) {
 			podesiKoordinateCvora(mash->noviCvorovi[i]);
 		}
 
+		//isprazni vektor sa novim cvorovima
 		mash->noviCvorovi.erase(mash->noviCvorovi.begin(), mash->noviCvorovi.end());
 
+		//azuriraj stare cvorove i vrati sume susednih cvorova na nulu
 		for (int i = 0; i < cvorovi.size(); i++) {
 			cvorovi[i]->azurirajCvorove();
+			cvorovi[i]->sumax = cvorovi[i]->sumay = cvorovi[i]->sumaz = cvorovi[i]->brojSusednihCvorova = 0.0;
 		}
 
+		//podeli lica
 		for (int i = 0; i < lica.size(); i++) {
 			lica[i]->deli();
 		}
 
+		//izracunaj vektor normale lica
 		for (int i = 0; i < mash->lica.size(); i++) {
 			mash->lica[i]->izracunajVektorNormale();
 		}
 
+		//-,,- cvorova
 		for (int i = 0; i < mash->cvorovi.size(); i++) {
-			mash->cvorovi[i]->izracunajVektorNormale(); 
+			mash->cvorovi[i]->izracunajVektorNormale();
 		}
 
+		//oznaci sve ivice kao nepodeljene
 		for (int i = 0; i < mash->ivice.size(); i++) {
 			mash->ivice[i]->podeljena = false;
 		}
-		
+
 
 	}
 
 }
 
-
 bool rotiraj = true;
-
 int rot = 0;
+
 void update(int value) {
 
 	if (rotiraj) rot = 1;
@@ -374,17 +310,13 @@ void display() {
 
 	crtajMash();
 
-	//glutSolidSphere(3, 50, 50);
-
-	//test();
 	glFlush();
-
 }
 
 void onMouseClick(int button, int state, int x, int y) {
 
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		if(rotiraj) rotiraj = false;
+		if (rotiraj) rotiraj = false;
 		else rotiraj = true;
 	}
 
@@ -398,34 +330,23 @@ int main(int argc, char** argv)
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("subdivizija");
 
-	GLfloat a[3] = { 0.0, 4.0, 0.0 },
-		b[3] = { 0.0, 0.0, -7.0 },
-		c[3] = { 4.0, 7.0, 6.0 },
-		d[3] = { -6.0, 6.0, -4.0 };
+	GLfloat a[3] = { -2.0, 2.0, -2.0 },
+		b[3] = { -2.0, -2.0, 2.0 },
+		c[3] = { 2.0, 2.0, 2.0 },
+		d[3] = { 2.0, -2.0, -2.0 };
 
-	GLfloat a2[3] = { 0.0, 0.0, 0.0 },
-		b2[3] = { 4.0, 0.0, 0.0 },
-		c2[3] = { 2.0, 0.0, 0.1 },
-		d2[3] = { 2.0, 4.0, 1.0 };
 
-	GLfloat a3[3] = { -2.0, 2.0, -2.0 },
-		b3[3] = { -2.0, -2.0, 2.0 },
-		c3[3] = { 2.0, 2.0, 2.0 },
-		d3[3] = { 2.0, -2.0, -2.0 };
+	tetraedar(a, b, c, d);
 
-	GLfloat a4[3] = { -2.0, 2.0, 0.0 },
-		b4[3] = { -2.0, -2.0, 0.0 },
-		c4[3] = { 2.0, 2.0, 0.0 },
-		d4[3] = { 2.0, -2.0, 0.0 };
-
-	tetraedar(a3, b3, c3, d3);
-	
 	//duzine ivica
+	
+	/*
 	for (int i = 0; i < mash->ivice.size(); i++) {
 
-		//cout << sqrt(pow(mash->ivice[i]->v->x - mash->ivice[i]->sled->v->x, 2) + pow(mash->ivice[i]->v->y - mash->ivice[i]->sled->v->y, 2) + pow(mash->ivice[i]->v->z - mash->ivice[i]->sled->v->z, 2)) << endl;
+		cout << sqrt(pow(mash->ivice[i]->v->x - mash->ivice[i]->sled->v->x, 2) + pow(mash->ivice[i]->v->y - mash->ivice[i]->sled->v->y, 2) + pow(mash->ivice[i]->v->z - mash->ivice[i]->sled->v->z, 2)) << endl;
 
 	}
+	*/
 
 	glutDisplayFunc(display);
 	glutReshapeFunc(winReshape);

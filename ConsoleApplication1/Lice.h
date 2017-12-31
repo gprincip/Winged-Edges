@@ -22,16 +22,7 @@ public:
 
 	std::vector<Cvor*> sviCvorovi();
 
-	void dodaj(Ivica *ivica) {
-		mash->ivice.push_back(ivica);
-	}
-
-	void dodajLice(Lice *lice) {
-		mash->lica.push_back(lice);
-	}
-
 	void deli();
 
 	void izracunajVektorNormale();
-
-	};
+};

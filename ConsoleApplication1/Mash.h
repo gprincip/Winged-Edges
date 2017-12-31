@@ -12,5 +12,4 @@ public:
 	std::vector<Cvor*> noviCvorovi;
 	std::vector<Ivica*> ivice;
 	std::vector<Lice*> lica;
-
 };

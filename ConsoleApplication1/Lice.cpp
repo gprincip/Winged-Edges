@@ -35,8 +35,8 @@ void Lice::deli() {
 			Cvor *v3 = e3->v;
 			Cvor *v4 = e4->v;
 
-			Ivica *en1 = new Ivica(v2, e->l, NULL /*treba da se stavi en2*/, e1, e4, mash);
-			Ivica *en2 = new Ivica(v4, NULL/*novo lice*/, en1, e3, e2, mash);
+			Ivica *en1 = new Ivica(v2, e->l, NULL, e1, e4, mash);
+			Ivica *en2 = new Ivica(v4, NULL, en1, e3, e2, mash);
 
 			en1->eSym = en2;
 
@@ -58,7 +58,6 @@ void Lice::deli() {
 			mash->lica.push_back(lnovo);
 
 			this->e = en1;
-
 		}
 }
 

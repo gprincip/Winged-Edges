@@ -26,13 +26,9 @@ public:
 		podeljena = false;
 	}
 
-	void dodaj(Ivica *ivica);
-
-	void dodajLice(Lice *lice);
-
 	void deli() {
 
-		Cvor *c = new Cvor(NULL); //treba da bude od en
+		Cvor *c = new Cvor(NULL);
 
 		Ivica *en = new Ivica(c, l, eSym, this, sled, mash);
 		Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled, mash);
@@ -52,8 +48,5 @@ public:
 		mash->cvorovi.push_back(c);
 		mash->ivice.push_back(en);
 		mash->ivice.push_back(enSym);
-
 	}
-
-
 };

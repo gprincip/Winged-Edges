@@ -97,7 +97,6 @@
   <ItemGroup>
     <ClCompile Include="ConsoleApplication1.cpp" />
     <ClCompile Include="Cvor.cpp" />
-    <ClCompile Include="Ivica.cpp" />
     <ClCompile Include="Lice.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

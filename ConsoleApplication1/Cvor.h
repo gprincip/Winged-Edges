@@ -13,7 +13,7 @@ public:
 
 	float sumax, sumay, sumaz;
 
-	int brojSuseda;
+	int brojSusednihCvorova;
 
 	float *vektorNormale; //[0] - x , [1] - y , [2] - z
 
@@ -28,7 +28,7 @@ public:
 		this->x = x; 
 		this->y = y;
 		this->z = z;
-		brojSuseda = 0;
+		brojSusednihCvorova = 0;
 		vektorNormale = new float[3];
 		vektorNormale[0] = vektorNormale[1] = vektorNormale[2] = 0;
 	}
