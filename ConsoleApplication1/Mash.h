@@ -6,7 +6,7 @@ class Cvor;
 class Ivica;
 class Lice;
 
-class Mash{
+class Mesh{
 public:
 	std::vector<Cvor*> cvorovi;
 	std::vector<Cvor*> noviCvorovi;

@@ -5,7 +5,9 @@
 #include "stdafx.h"
 #include<stdlib.h>
 #include<iostream>
+#include<fstream>
 #include "GL\glut.h"
+#include<string>
 
 #include "Mash.h"
 #include "Cvor.h"
@@ -19,14 +21,95 @@ using namespace std;
 float width = 500.0;
 float height = 500.0;
 
-Mash *mash = new Mash;
+Mesh *mesh = new Mesh;
 
 float rotacijaSvetla1 = 0.0;
 
 int brojSubdivizija = 3;
 
+void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
+
+	ifstream triangleMeshStream;
+	triangleMeshStream.open(triangleMeshImeFajla);
+	string linija;
+
+	if (triangleMeshStream.is_open()) {
+		while (getline(triangleMeshStream, linija)) {
+
+			int i = 0;
+			string x, y, z;
+			x = y = z = "";
+
+			//ucitavanje iksa
+			while (true) {
+				if (linija[i] == ' ') break;
+				x += linija[i++];
+			}
+			i++;
+			//uvitavanje ipsilona
+			while (true) {
+				if (linija[i] == ' ') break;
+				y += linija[i++];
+
+			}
+			i++;
+			//ucitavanje zeda
+			while (true) {
+				if (linija[i] == ' ') break;
+				z += linija[i++];
+			}
+
+
+			mesh->cvorovi.push_back(new Cvor(stof(x), stof(y), stof(z)));
+
+		}
+		triangleMeshStream.close();
+	}
+	else {
+		cout << "Greska pri otvaranju fajla" << endl;
+	}
+
+	ifstream indeksi;
+	indeksi.open(triangleMeshImeFajla);
+
+	if (indeksi.is_open()) {
+		while (getline(indeksi, linija)) {
+
+			int i = 2;
+			string ind1, ind2, ind3;
+			
+			//ucitavanje prvog indeksa
+			while (true) {
+				if (linija[i] == ' ') break;
+				ind1 += linija[i++];
+			}
+			i++;
+
+			//ucitavanje drugog indeksa
+			while (true) {
+				if (linija[i] == ' ') break;
+				ind2 += linija[i++];
+			}
+			i++;
+
+			//ucitavanje treceg indeksa
+			while (true) {
+				if (linija[i] == ' ') break;
+				ind1 += linija[i++];
+			}
+
+
+
+		}
+	}
+	else {
+		cout << "Greska pri otvaranju fajla" << endl;
+	}
+}
+
 static void myInit()
 {
+	//ucitajMash("bunny.txt" , "");
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -34,11 +117,11 @@ static void myInit()
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
+	//glEnable(GL_LIGHT1);
 
 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat mat_shininess[] = { 50.0 };
-	GLfloat light_position[] = { -4.0, 0.0, -3, 1.0 };
+	GLfloat light_position[] = { -0.0, 0.0, -7, 1.0 };
 
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
@@ -113,18 +196,18 @@ void nacrtajIvicu(Ivica *i) {
 
 void crtajMash() {
 
-	for (int i = 0; i < mash->lica.size(); i++) {
-		Ivica *iv = mash->lica[i]->e;
-		glColor3f(mash->lica[i]->r, mash->lica[i]->g, mash->lica[i]->b);
+	for (int i = 0; i < mesh->lica.size(); i++) {
+		Ivica *iv = mesh->lica[i]->e;
+		glColor3f(mesh->lica[i]->r, mesh->lica[i]->g, mesh->lica[i]->b);
 
 		glBegin(GL_TRIANGLES);
-		glNormal3fv(mash->lica[i]->vektorNormale);
+		glNormal3fv(mesh->lica[i]->vektorNormale);
 
 		do {
 			glNormal3fv(iv->v->vektorNormale);
 			glVertex3f(iv->v->x, iv->v->y, iv->v->z);
 			iv = iv->sled;
-		} while (iv != mash->lica[i]->e);
+		} while (iv != mesh->lica[i]->e);
 		glEnd();
 	}
 
@@ -137,30 +220,30 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	Cvor *v3 = new Cvor(temeC[0], temeC[1], temeC[2]);
 	Cvor *v4 = new Cvor(temeD[0], temeD[1], temeD[2]);
 
-	Lice *f1 = new Lice(NULL, mash);
-	Lice *f2 = new Lice(NULL, mash);
-	Lice *f3 = new Lice(NULL, mash);
-	Lice *f4 = new Lice(NULL, mash);
+	Lice *f1 = new Lice(NULL, mesh);
+	Lice *f2 = new Lice(NULL, mesh);
+	Lice *f3 = new Lice(NULL, mesh);
+	Lice *f4 = new Lice(NULL, mesh);
 
 	//f3
-	Ivica *a = new Ivica(v1, f3, NULL, NULL, NULL, mash);
-	Ivica *b = new Ivica(v2, f3, NULL, a, NULL, mash);
-	Ivica *c = new Ivica(v3, f3, NULL, b, a, mash);
+	Ivica *a = new Ivica(v1, f3, NULL, NULL, NULL, mesh);
+	Ivica *b = new Ivica(v2, f3, NULL, a, NULL, mesh);
+	Ivica *c = new Ivica(v3, f3, NULL, b, a, mesh);
 
 	//f2
-	Ivica *dSym = new Ivica(v4, f2, NULL, NULL, NULL, mash);
-	Ivica *bSym = new Ivica(v3, f2, b, dSym, NULL, mash);
-	Ivica *fSym = new Ivica(v2, f2, NULL, bSym, dSym, mash);
+	Ivica *dSym = new Ivica(v4, f2, NULL, NULL, NULL, mesh);
+	Ivica *bSym = new Ivica(v3, f2, b, dSym, NULL, mesh);
+	Ivica *fSym = new Ivica(v2, f2, NULL, bSym, dSym, mesh);
 
 	//f4
-	Ivica *d = new Ivica(v3, f4, dSym, NULL, NULL, mash);
-	Ivica *e = new Ivica(v4, f4, NULL, d, NULL, mash);
-	Ivica *cSym = new Ivica(v1, f4, c, e, d, mash);
+	Ivica *d = new Ivica(v3, f4, dSym, NULL, NULL, mesh);
+	Ivica *e = new Ivica(v4, f4, NULL, d, NULL, mesh);
+	Ivica *cSym = new Ivica(v1, f4, c, e, d, mesh);
 
 	//f1
-	Ivica *f = new Ivica(v4, f1, fSym, NULL, NULL, mash);
-	Ivica *aSym = new Ivica(v2, f1, a, f, NULL, mash);
-	Ivica *eSym = new Ivica(v1, f1, e, aSym, f, mash);
+	Ivica *f = new Ivica(v4, f1, fSym, NULL, NULL, mesh);
+	Ivica *aSym = new Ivica(v2, f1, a, f, NULL, mesh);
+	Ivica *eSym = new Ivica(v1, f1, e, aSym, f, mesh);
 
 	//------------
 
@@ -210,35 +293,35 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 	f4->e = d;
 	//------------
 
-	mash->cvorovi.push_back(v1);
-	mash->cvorovi.push_back(v2);
-	mash->cvorovi.push_back(v3);
-	mash->cvorovi.push_back(v4);
+	mesh->cvorovi.push_back(v1);
+	mesh->cvorovi.push_back(v2);
+	mesh->cvorovi.push_back(v3);
+	mesh->cvorovi.push_back(v4);
 
-	mash->ivice.push_back(a);
-	mash->ivice.push_back(b);
-	mash->ivice.push_back(c);
-	mash->ivice.push_back(d);
-	mash->ivice.push_back(e);
-	mash->ivice.push_back(f);
-	mash->ivice.push_back(aSym);
-	mash->ivice.push_back(bSym);
-	mash->ivice.push_back(cSym);
-	mash->ivice.push_back(dSym);
-	mash->ivice.push_back(eSym);
-	mash->ivice.push_back(fSym);
+	mesh->ivice.push_back(a);
+	mesh->ivice.push_back(b);
+	mesh->ivice.push_back(c);
+	mesh->ivice.push_back(d);
+	mesh->ivice.push_back(e);
+	mesh->ivice.push_back(f);
+	mesh->ivice.push_back(aSym);
+	mesh->ivice.push_back(bSym);
+	mesh->ivice.push_back(cSym);
+	mesh->ivice.push_back(dSym);
+	mesh->ivice.push_back(eSym);
+	mesh->ivice.push_back(fSym);
 
-	mash->lica.push_back(f1);
-	mash->lica.push_back(f2);
-	mash->lica.push_back(f3);
-	mash->lica.push_back(f4);
+	mesh->lica.push_back(f1);
+	mesh->lica.push_back(f2);
+	mesh->lica.push_back(f3);
+	mesh->lica.push_back(f4);
 
-	for (int i = 0; i < mash->lica.size(); i++) {
-		mash->lica[i]->izracunajVektorNormale();
+	for (int i = 0; i < mesh->lica.size(); i++) {
+		mesh->lica[i]->izracunajVektorNormale();
 	}
 
-	for (int i = 0; i < mash->cvorovi.size(); i++) {
-		mash->cvorovi[i]->izracunajVektorNormale();
+	for (int i = 0; i < mesh->cvorovi.size(); i++) {
+		mesh->cvorovi[i]->izracunajVektorNormale();
 	}
 
 	//Subdivizija
@@ -248,9 +331,9 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		k++;
 
 		//zapamti podatke pre subdivizije
-		vector<Ivica*> ivice = mash->ivice;
-		vector<Cvor*> cvorovi = mash->cvorovi; 
-		vector<Lice*> lica = mash->lica;
+		vector<Ivica*> ivice = mesh->ivice;
+		vector<Cvor*> cvorovi = mesh->cvorovi; 
+		vector<Lice*> lica = mesh->lica;
 
 		//izracunaj sumu susednih cvorova pre subdivizije
 		for (int i = 0; i < cvorovi.size(); i++) {
@@ -267,12 +350,12 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		}
 
 		//podesi koordinate novih cvorova
-		for (int i = 0; i < mash->noviCvorovi.size(); i++) {
-			podesiKoordinateCvora(mash->noviCvorovi[i]);
+		for (int i = 0; i < mesh->noviCvorovi.size(); i++) {
+			podesiKoordinateCvora(mesh->noviCvorovi[i]);
 		}
 
 		//isprazni vektor sa novim cvorovima
-		mash->noviCvorovi.erase(mash->noviCvorovi.begin(), mash->noviCvorovi.end());
+		mesh->noviCvorovi.erase(mesh->noviCvorovi.begin(), mesh->noviCvorovi.end());
 
 		//azuriraj stare cvorove i vrati sume susednih cvorova na nulu
 		for (int i = 0; i < cvorovi.size(); i++) {
@@ -286,18 +369,18 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		}
 
 		//izracunaj vektor normale lica
-		for (int i = 0; i < mash->lica.size(); i++) {
-			mash->lica[i]->izracunajVektorNormale();
+		for (int i = 0; i < mesh->lica.size(); i++) {
+			mesh->lica[i]->izracunajVektorNormale();
 		}
 
 		//-,,- cvorova
-		for (int i = 0; i < mash->cvorovi.size(); i++) {
-			mash->cvorovi[i]->izracunajVektorNormale();
+		for (int i = 0; i < mesh->cvorovi.size(); i++) {
+			mesh->cvorovi[i]->izracunajVektorNormale();
 		}
 
 		//oznaci sve ivice kao nepodeljene
-		for (int i = 0; i < mash->ivice.size(); i++) {
-			mash->ivice[i]->podeljena = false;
+		for (int i = 0; i < mesh->ivice.size(); i++) {
+			mesh->ivice[i]->podeljena = false;
 		}
 
 

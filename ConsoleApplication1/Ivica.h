@@ -13,16 +13,16 @@ public:
 	Ivica *eSym;
 	Ivica *preth;
 	Ivica *sled;
-	Mash *mash;
+	Mesh *mesh;
 	bool podeljena;
 
-	Ivica(Cvor *v = NULL, Lice *l = NULL, Ivica *eSym = NULL, Ivica *preth = NULL, Ivica *sled = NULL, Mash *mash = NULL) {
+	Ivica(Cvor *v = NULL, Lice *l = NULL, Ivica *eSym = NULL, Ivica *preth = NULL, Ivica *sled = NULL, Mesh *mesh = NULL) {
 		this->v = v;
 		this->l = l;
 		this->eSym = eSym;
 		this->preth = preth;
 		this->sled = sled;
-		this->mash = mash;
+		this->mesh = mesh;
 		podeljena = false;
 	}
 
@@ -30,8 +30,8 @@ public:
 
 		Cvor *c = new Cvor(NULL);
 
-		Ivica *en = new Ivica(c, l, eSym, this, sled, mash);
-		Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled, mash);
+		Ivica *en = new Ivica(c, l, eSym, this, sled, mesh);
+		Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled, mesh);
 
 		c->e = en;
 
@@ -43,10 +43,10 @@ public:
 		en->sled->preth = en;
 		enSym->sled->preth = enSym;
 
-		mash->noviCvorovi.push_back(c);
+		mesh->noviCvorovi.push_back(c);
 
-		mash->cvorovi.push_back(c);
-		mash->ivice.push_back(en);
-		mash->ivice.push_back(enSym);
+		mesh->cvorovi.push_back(c);
+		mesh->ivice.push_back(en);
+		mesh->ivice.push_back(enSym);
 	}
 };

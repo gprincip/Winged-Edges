@@ -79,6 +79,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="bunny.txt" />
+    <Text Include="indeksi.txt" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
