@@ -48,7 +48,7 @@ void winReshape(GLint w, GLint h)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(40.0, (float)w / (float)h, -7, 7);
-	gluLookAt(0, 0, 15, 0, 0, 9, 0, 1, 0);
+	gluLookAt(0, 0, 8, 0, 0, -7, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -101,7 +101,7 @@ void crtajMash() {
 		glBegin(GL_TRIANGLES);
 		glNormal3fv(mash->lica[i]->vektorNormale);
 		do {
-			//glNormal3fv(iv->v->vektorNormale);
+			glNormal3fv(iv->v->vektorNormale);
 			glVertex3f(iv->v->x, iv->v->y, iv->v->z); //TODO: dodaj vektor normale za cvorove
 			iv = iv->sled;
 		} while (iv != mash->lica[i]->e);
@@ -291,8 +291,12 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		mash->lica[i]->izracunajVektorNormale();
 	}
 
+	for (int i = 0; i < mash->cvorovi.size(); i++) {
+		mash->cvorovi[i]->izracunajVektorNormale();
+	}
+
 	int k = 0;
-	while (k < 2){
+	while (k < 3){
 		k++;
 
 		vector<Ivica*> ivice = mash->ivice;
@@ -362,13 +366,15 @@ void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glLoadIdentity();
 
-	glRotated(rot, 0, 1, 0);
+	glRotated(rot, 1, 0, 0);
 
 	float temeA[3] = { -6.0, -6.0, 0.0 };
 	float temeB[3] = { -2.0, 0.0 , 0.0 };
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
 
 	crtajMash();
+
+	//glutSolidSphere(3, 50, 50);
 
 	//test();
 	glFlush();

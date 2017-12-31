@@ -73,4 +73,11 @@ void Cvor::izracunajVektorNormale() {
 	this->vektorNormale[1] = sumay / brLica;
 	this->vektorNormale[2] = sumaz / brLica;
 
+	//normalizacija
+
+	float norma = sqrt(pow(vektorNormale[0], 2) + pow(vektorNormale[1], 2) + pow(vektorNormale[2], 2));
+
+	vektorNormale[0] /= norma;
+	vektorNormale[1] /= norma;
+	vektorNormale[2] /= norma;
 }

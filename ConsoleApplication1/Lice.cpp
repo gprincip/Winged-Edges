@@ -63,19 +63,20 @@ void Lice::deli() {
 }
 
 void Lice::izracunajVektorNormale() {
-
 	Ivica *i = this->e;
 
-	do {
+	float u[3] = { i->sled->v->x - i->v->x , i->sled->v->y - i->v->y , i->sled->v->z - i->v->z };
+	float v[3] = { i->sled->sled->v->x - i->v->x , i->sled->sled->v->y - i->v->y , i->sled->sled->v->z - i->v->z };
 
-		Cvor *c = i->v;
-		Cvor *cSled = i->sled->v;
+	vektorNormale[0] = (u[1] * v[2]) - (u[2] * v[1]);
+	vektorNormale[1] = (u[2] * v[0]) - (u[0] * v[2]);
+	vektorNormale[2] = (u[0] * v[1]) - (u[1] * v[0]);
 
-		vektorNormale[0] += (c->y - cSled->y)*(c->z + cSled->z);
-		vektorNormale[1] += (c->z - cSled->z)*(c->x + cSled->x);
-		vektorNormale[2] += (c->x - cSled->x)*(c->y + cSled->y);
+	//normalizacija
 
-		i = i->sled;
-	} while (i != this->e);
+	float norma = sqrt(pow(vektorNormale[0], 2) + pow(vektorNormale[1], 2) + pow(vektorNormale[2], 2));
 
+	vektorNormale[0] /= norma;
+	vektorNormale[1] /= norma;
+	vektorNormale[2] /= norma;
 }
