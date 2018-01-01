@@ -42,7 +42,7 @@ void Cvor::izracunajSumuSusednihCvorova() {
 		sumaz += i->sled->v->z;
 		i = i->preth->eSym;
 		brojSusednihCvorova++;
-	} while (i != this->e);
+	} while (i != this->e && i != NULL);
 }
 
 void Cvor::izracunajVektorNormale() {
@@ -61,7 +61,8 @@ void Cvor::izracunajVektorNormale() {
 		sumaz += e->l->vektorNormale[2];
 		e = e->preth->eSym;
 		brLica++;
-	} while (e != this->e);
+		cout << "klasa cvor while" << endl;
+	} while (e != this->e && e != NULL);
 
 	this->vektorNormale[0] = sumax / brLica;
 	this->vektorNormale[1] = sumay / brLica;

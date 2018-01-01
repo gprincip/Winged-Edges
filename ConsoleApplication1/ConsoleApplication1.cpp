@@ -27,6 +27,33 @@ float rotacijaSvetla1 = 0.0;
 
 int brojSubdivizija = 3;
 
+int brojIvica(Lice *l) {
+
+	Ivica *i = l->e;
+	int br = 0;
+	do {
+		br++;
+		i = i->sled;
+	} while (i != l->e);
+	return br;
+}
+
+void podesiSimetricneIvice() {
+
+	for (int i = 0; i < mesh->ivice.size(); i++) {
+
+		Cvor *c1 = mesh->ivice[i]->v;
+		Cvor *c2 = mesh->ivice[i]->sled->v;
+
+		for (int j = 0; j < mesh->ivice.size(); j++) {
+
+			if (mesh->ivice[j]->v == c2 && mesh->ivice[j]->sled->v == c1) {
+				mesh->ivice[i]->eSym = mesh->ivice[j];
+			}
+		}
+	}
+}
+
 void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 
 	ifstream triangleMeshStream;
@@ -70,7 +97,7 @@ void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 	}
 
 	ifstream indeksi;
-	indeksi.open(triangleMeshImeFajla);
+	indeksi.open(indeksiImeFajla);
 
 	if (indeksi.is_open()) {
 		while (getline(indeksi, linija)) {
@@ -95,55 +122,115 @@ void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 			//ucitavanje treceg indeksa
 			while (true) {
 				if (linija[i] == ' ') break;
-				ind1 += linija[i++];
+				ind3 += linija[i++];
 			}
 
+			Cvor *c1 = mesh->cvorovi[stoi(ind1)];
+			Cvor *c2 = mesh->cvorovi[stoi(ind2)];
+			Cvor *c3 = mesh->cvorovi[stoi(ind3)];
 
+			Ivica *e1 = new Ivica(c1, NULL, NULL, NULL, NULL, mesh);
+			Ivica *e2 = new Ivica(c2, NULL, NULL, e1, NULL, mesh);
+			Ivica *e3 = new Ivica(c3, NULL, NULL, e2, e1, mesh);
+			c1->e = e1;
+			c2->e = e2;
+			c3->e = e3;
+
+			mesh->ivice.push_back(e1);
+			mesh->ivice.push_back(e2);
+			mesh->ivice.push_back(e3);
+
+			e1->sled = e2;
+			e2->sled = e3;
+
+			e1->preth = e3;
+
+			
+			if (c1->x != c2->x && c2->x != c3->x && c3->x != c1->x) { //ako trougao nije paralelan z osi
+
+				float suma = 0.0;
+
+				suma += (c2->x - c1->x)*(c2->y + c1->y);
+				suma += (c3->x - c2->x)*(c3->y + c2->y);
+				suma += (c1->x - c3->x)*(c1->y + c3->y);
+
+				if (suma > 0) { //smer kazaljke na satu
+					e2->v = c3;
+					e3->v = c2;
+				}
+			}
+			else {
+				float x1 = c1->z;
+				float x2 = c2->z;
+				float x3 = c3->z;
+
+				float suma = 0.0;
+
+				suma += (x2 - x1)*(c2->y + c1->y);
+				suma += (x3 - x2)*(c3->y + c2->y);
+				suma += (x1 - x3)*(c1->y + c3->y);
+
+				if (suma > 0) { //smer kazaljke na satu
+					e2->v = c3;
+					e3->v = c2;
+				}
+
+			}
+
+			Lice *l = new Lice(e1, mesh);
+			mesh->lica.push_back(l);
+			e1->l = l;
+			e2->l = l;
+			e3->l = l;
 
 		}
+
 	}
 	else {
 		cout << "Greska pri otvaranju fajla" << endl;
 	}
+
+	podesiSimetricneIvice();
+
 }
 
 static void myInit()
 {
-	//ucitajMash("bunny.txt" , "");
+	ucitajMesh("bunny.txt" , "indeksi.txt");
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
 
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
 	//glEnable(GL_LIGHT1);
 
-	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat mat_shininess[] = { 50.0 };
-	GLfloat light_position[] = { -0.0, 0.0, -7, 1.0 };
+	//GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	//GLfloat mat_shininess[] = { 50.0 };
+	//GLfloat light_position[] = { -0.0, 0.0, -7, 1.0 };
 
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	//glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	//glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-	GLfloat light1_ambient[] = { 1.0, 0.0, 0.0, 1.0 };
-	GLfloat light1_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light1_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light1_position[] = { 4.0, 0.0, -3.0, 1.0 };
-	GLfloat spot_direction[] = { -1.0, -1.0, 0.0 };
+	//GLfloat light1_ambient[] = { 1.0, 0.0, 0.0, 1.0 };
+	//GLfloat light1_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+	//GLfloat light1_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	//GLfloat light1_position[] = { 4.0, 0.0, -3.0, 1.0 };
+	//GLfloat spot_direction[] = { -1.0, -1.0, 0.0 };
 
-	glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
-	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.5);
-	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.5);
-	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.2);
+	//glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
+	//glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+	//glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
+	//glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+	//glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.5);
+	//glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.5);
+	//glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.2);
 
-	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
-	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
-	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
+	//glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
+	//glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
+	//glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
 
 }
 
@@ -152,8 +239,11 @@ void winReshape(GLint w, GLint h)
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(40.0, (float)w / (float)h, -7, 7);
-	gluLookAt(0, 0, 10, 0, 0, -7, 0, 1, 0);
+	/*gluPerspective(40.0, (float)w / (float)h, -7, 7);
+	gluLookAt(0, 0, 10, 0, 0, -7, 0, 1, 0);*/
+	
+	glOrtho(-0.5, 0.5, -0.5, 0.5, -0.5, 0.5);
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -195,11 +285,11 @@ void nacrtajIvicu(Ivica *i) {
 }
 
 void crtajMash() {
-
+	int br = 0;
 	for (int i = 0; i < mesh->lica.size(); i++) {
 		Ivica *iv = mesh->lica[i]->e;
 		glColor3f(mesh->lica[i]->r, mesh->lica[i]->g, mesh->lica[i]->b);
-
+		
 		glBegin(GL_TRIANGLES);
 		glNormal3fv(mesh->lica[i]->vektorNormale);
 
@@ -210,7 +300,6 @@ void crtajMash() {
 		} while (iv != mesh->lica[i]->e);
 		glEnd();
 	}
-
 }
 
 void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
@@ -388,6 +477,79 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 
 }
 
+void subdivizija(int brojIteracija) {
+	int k = 0;
+
+	for (int i = 0; i < mesh->lica.size(); i++) {
+		mesh->lica[i]->izracunajVektorNormale();
+		cout << "lica normale" << endl;
+	}
+
+	for (int i = 0; i < mesh->cvorovi.size(); i++) {
+		mesh->cvorovi[i]->izracunajVektorNormale();
+		cout << "cvor normale" << endl;
+	}
+
+	while (k < brojIteracija) {
+		k++;
+
+		//zapamti podatke pre subdivizije
+		vector<Ivica*> ivice = mesh->ivice;
+		vector<Cvor*> cvorovi = mesh->cvorovi;
+		vector<Lice*> lica = mesh->lica;
+
+		//izracunaj sumu susednih cvorova pre subdivizije
+		for (int i = 0; i < cvorovi.size(); i++) {
+			cvorovi[i]->izracunajSumuSusednihCvorova();
+		}
+
+		//podeli ivice
+		for (int i = 0; i < ivice.size(); i++) {
+			if (!ivice[i]->podeljena) {
+				ivice[i]->podeljena = true;
+				ivice[i]->eSym->podeljena = true;
+				ivice[i]->deli();
+			}
+		}
+
+		//podesi koordinate novih cvorova
+		for (int i = 0; i < mesh->noviCvorovi.size(); i++) {
+			podesiKoordinateCvora(mesh->noviCvorovi[i]);
+		}
+
+		//isprazni vektor sa novim cvorovima
+		mesh->noviCvorovi.erase(mesh->noviCvorovi.begin(), mesh->noviCvorovi.end());
+
+		//azuriraj stare cvorove i vrati sume susednih cvorova na nulu
+		for (int i = 0; i < cvorovi.size(); i++) {
+			cvorovi[i]->azurirajCvorove();
+			cvorovi[i]->sumax = cvorovi[i]->sumay = cvorovi[i]->sumaz = cvorovi[i]->brojSusednihCvorova = 0.0;
+		}
+
+		//podeli lica
+		for (int i = 0; i < lica.size(); i++) {
+			lica[i]->deli();
+		}
+
+		//izracunaj vektor normale lica
+		for (int i = 0; i < mesh->lica.size(); i++) {
+			mesh->lica[i]->izracunajVektorNormale();
+		}
+
+		//-,,- cvorova
+		for (int i = 0; i < mesh->cvorovi.size(); i++) {
+			mesh->cvorovi[i]->izracunajVektorNormale();
+		}
+
+		//oznaci sve ivice kao nepodeljene
+		for (int i = 0; i < mesh->ivice.size(); i++) {
+			mesh->ivice[i]->podeljena = false;
+		}
+
+
+	}
+}
+
 bool rotiraj = true;
 int rot = 0;
 
@@ -441,7 +603,7 @@ int main(int argc, char** argv)
 		d[3] = { 2.0, -2.0, -2.0 };
 
 
-	tetraedar(a, b, c, d);
+	//tetraedar(a, b, c, d);
 
 	//duzine ivica
 	
@@ -458,6 +620,7 @@ int main(int argc, char** argv)
 	glutTimerFunc(100, update, 0);
 	glutMouseFunc(onMouseClick);
 	myInit();
+	subdivizija(0);
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();
 	return 0;
