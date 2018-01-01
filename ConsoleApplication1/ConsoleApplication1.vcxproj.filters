@@ -22,6 +22,18 @@
     <Text Include="indeksi.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="tetraedar.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="tetraedarIndeksi.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="zmaj.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="zmajIndeksi.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

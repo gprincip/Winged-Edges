@@ -30,23 +30,40 @@ public:
 
 		Cvor *c = new Cvor(NULL);
 
-		Ivica *en = new Ivica(c, l, eSym, this, sled, mesh);
-		Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled, mesh);
+		if (eSym != NULL) { //ako nije granicna ivica
 
-		c->e = en;
+			Ivica *en = new Ivica(c, l, eSym, this, sled, mesh);
+			Ivica *enSym = new Ivica(c, eSym->l, this, eSym, eSym->sled, mesh);
 
-		this->sled = en;
-		eSym->sled = enSym;
-		this->eSym = enSym;
-		en->eSym->eSym = en;
+			c->e = en;
 
-		en->sled->preth = en;
-		enSym->sled->preth = enSym;
+			this->sled = en;
+			eSym->sled = enSym;
+			this->eSym = enSym;
+			en->eSym->eSym = en;
 
-		mesh->noviCvorovi.push_back(c);
+			en->sled->preth = en;
+			enSym->sled->preth = enSym;
 
-		mesh->cvorovi.push_back(c);
-		mesh->ivice.push_back(en);
-		mesh->ivice.push_back(enSym);
+			mesh->noviCvorovi.push_back(c);
+
+			mesh->cvorovi.push_back(c);
+			mesh->ivice.push_back(en);
+			mesh->ivice.push_back(enSym);
+
+		}
+		else { //ako je granicna
+
+			Ivica *en = new Ivica(c, l, NULL, this, sled, mesh);
+
+			c->e = en;
+			this->sled = en;
+			en->sled->preth = en;
+			
+			mesh->noviCvorovi.push_back(c);
+			mesh->cvorovi.push_back(c);
+
+
+		}
 	}
 };

@@ -78,4 +78,37 @@ void Lice::izracunajVektorNormale() {
 	vektorNormale[0] /= norma;
 	vektorNormale[1] /= norma;
 	vektorNormale[2] /= norma;
+
+	//provera da li svaka ivica pamti lice sa leve strane
+
+	Cvor *c1 = e->v;
+	Cvor *c2 = e->sled->v;
+	Cvor *c3 = e->sled->sled->v;
+
+	float srednjaTacka[3]; //[0] - x, [1] - y, [2] - z
+	srednjaTacka[0] = (c1->x + c2->x + c3->x) / 3.0;
+	srednjaTacka[1] = (c1->y + c2->y + c3->y) / 3.0;
+	srednjaTacka[2] = (c1->z + c2->z + c3->z) / 3.0;
+
+	//d1 - udaljenost od (0,0,0) do srednjeTacke lica
+	float d1 = sqrt(pow(0 - srednjaTacka[0], 2) + pow(0 - srednjaTacka[1], 2) + pow(0 - srednjaTacka[2], 2));
+
+	//d2 - udaljenost od vekt. normale do sr. t.
+	float d2 = sqrt(pow(vektorNormale[0] - srednjaTacka[0], 2) + pow(vektorNormale[1] - srednjaTacka[1], 2) + pow(vektorNormale[2] - srednjaTacka[2], 2));
+
+	if (d1 < d2) { //zameni smer ivica
+
+		Ivica *e1 = e;
+		Ivica *e2 = e1->sled;
+		Ivica *e3 = e2->sled;
+
+		e1->sled = e1->preth;
+		e2->sled = e2->preth;
+		e3->sled = e3->preth;
+
+		e1->preth = e1->sled->sled;
+		e2->preth = e2->sled->sled;
+		e3->preth = e3->sled->sled;
+	}
+
 }

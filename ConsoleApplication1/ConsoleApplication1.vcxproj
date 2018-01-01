@@ -81,7 +81,11 @@
   <ItemGroup>
     <Text Include="bunny.txt" />
     <Text Include="indeksi.txt" />
+    <Text Include="tetraedar.txt" />
     <Text Include="ReadMe.txt" />
+    <Text Include="tetraedarIndeksi.txt" />
+    <Text Include="zmaj.txt" />
+    <Text Include="zmajIndeksi.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\RacunarskaGrafika_2\Predavanja_II_grupa\GL Files\include\GL\GL.H" />
