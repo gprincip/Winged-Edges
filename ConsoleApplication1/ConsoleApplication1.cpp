@@ -23,7 +23,8 @@ float height = 500.0;
 
 Mesh *mesh = new Mesh;
 
-float rotacijaSvetla1 = 0.0;
+bool rotirajSvetlo = false;
+int rotacijaSvetla = 0.0;
 
 int brojSubdivizija = 3;
 
@@ -176,41 +177,11 @@ void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 
 static void myInit()
 {
-	ucitajMesh("model.txt" , "modelIndeksi.txt");
+	ucitajMesh("tetraedar.txt" , "tetraedarIndeksi.txt");
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
-
-	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat mat_shininess[] = { 50.0 };
-	GLfloat light_position[] = { 0.0, 0.0, 1.5, 1.0 };
-
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-	GLfloat light1_ambient[] = { 1.0, 0.0, 0.0, 1.0 };
-	GLfloat light1_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light1_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light1_position[] = { 4.0, 0.0, -3.0, 1.0 };
-	GLfloat spot_direction[] = { -1.0, -1.0, 0.0 };
-
-	glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
-	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.5);
-	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.5);
-	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.2);
-
-	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
-	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
-	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
 
 }
 
@@ -219,8 +190,8 @@ void winReshape(GLint w, GLint h)
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(40.0, (float)w / (float)h, -2, 2);
-	gluLookAt(0, 0, -3, 0, 0, 0.5, 0, 1, 0);
+	gluPerspective(40.0, (float)w / (float)h, -2.0, 2.0);
+	gluLookAt(0, 0, -3, 0, 0, 2, 0, 1, 0);
 	
 	//glOrtho(-7, 7, -7, 7, -7, 7);
 	//glOrtho(-0.5, 0.5, -0.5, 0.5, -0.5, 0.5);
@@ -537,8 +508,10 @@ int rot = 0;
 
 void update(int value) {
 
-	if (rotiraj) rot = 1;
-	else rot = 0;
+	if (rotiraj) rot = (rot + 1) % 360;
+	
+
+	if(rotirajSvetlo) rotacijaSvetla = (rotacijaSvetla + 2) % 360;
 
 	glutPostRedisplay();
 	glutTimerFunc(25, update, 0);
@@ -570,15 +543,52 @@ void test() {
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glLoadIdentity();
+	
+	glLoadIdentity();
+	
+	glRotated(rotacijaSvetla, 1, 0, 0);
 
-	glRotated(rot, 1, 0, 0);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat mat_shininess[] = { 50.0 };
+	GLfloat light_position[] = { 0.0, 0.0, 4.0, 1.0 };
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+	GLfloat light1_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light1_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light1_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light1_position[] = { 0.0, 0.0, -4.0, 1.0 };
+	GLfloat spot_direction[] = { 0.0, 0.0, 0.0 };
+
+	glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0);
+	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0);
+	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.15);
+
+	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 100.0);
+	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
+	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
+
+	glLoadIdentity();
+
+	glRotated(rot, 0, 1, 0);
 
 	float temeA[3] = { -6.0, -6.0, 0.0 };
 	float temeB[3] = { -2.0, 0.0 , 0.0 };
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
 
 	crtajMash();
+
+	//glutSolidSphere(0.4, 100, 100);
 
 	/*Lice *l = mesh->lica[0];
 
@@ -593,6 +603,7 @@ void display() {
 	//test();
 	//glutSolidSphere(1, 5, 5);
 
+
 	glFlush();
 }
 
@@ -601,6 +612,15 @@ void onMouseClick(int button, int state, int x, int y) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		if (rotiraj) rotiraj = false;
 		else rotiraj = true;
+	}
+
+}
+
+void keybordFunc(unsigned char key, int x, int y) {
+
+	if (key == 's') {
+		if(rotirajSvetlo) rotirajSvetlo = false;
+		else rotirajSvetlo = true;
 	}
 
 }
@@ -634,8 +654,9 @@ int main(int argc, char** argv)
 	glutReshapeFunc(winReshape);
 	glutTimerFunc(100, update, 0);
 	glutMouseFunc(onMouseClick);
+	glutKeyboardFunc(keybordFunc);
 	myInit();
-	subdivizija(0);
+	subdivizija(4);
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();
 	return 0;
