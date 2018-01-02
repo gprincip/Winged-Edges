@@ -175,9 +175,56 @@ void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 
 }
 
+int indeksCvoraUMeshu(Cvor *c) {
+
+	for (int i = 0; i < mesh->cvorovi.size(); i++) {
+		if (mesh->cvorovi[i] == c) {
+			return i;
+			break;
+		}
+	}
+	return INT_MAX;
+}
+
+void upisiMesh(char *imeFajlaCvorovi, char *imeFajlaIndeksi) {
+
+	ofstream cvorovi;
+	cvorovi.open(imeFajlaCvorovi);
+
+	for (int i = 0; i < mesh->cvorovi.size(); i++) {
+		cvorovi << mesh->cvorovi[i]->x << " "<<mesh->cvorovi[i]->y << " " << mesh->cvorovi[i]->z << " ";
+		if (i != mesh->cvorovi.size() - 1) cvorovi << endl;
+	}
+
+	cvorovi.close();
+
+	ofstream indeksi;
+	indeksi.open(imeFajlaIndeksi);
+
+	for (int i = 0; i < mesh->lica.size(); i++) {
+		indeksi << "3 ";
+
+		Ivica *e = mesh->lica[i]->e;
+
+		do {
+			int ind = indeksCvoraUMeshu(e->v);
+			if(ind != INT_MAX) indeksi<< ind << " ";
+			else { 
+				cout << "Greska prilikom upisivanja u mesh" << endl;
+				return;
+			}
+			e = e->sled;
+		} while (e != mesh->lica[i]->e);
+
+		if (i != mesh->lica.size()-1) indeksi << endl;
+	}
+
+	indeksi.close();
+}
+
 static void myInit()
 {
-	ucitajMesh("tetraedar.txt" , "tetraedarIndeksi.txt");
+	ucitajMesh("testCvorovi.txt" , "testIndeksi.txt");
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -190,8 +237,8 @@ void winReshape(GLint w, GLint h)
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(40.0, (float)w / (float)h, -2.0, 2.0);
-	gluLookAt(0, 0, -3, 0, 0, 2, 0, 1, 0);
+	gluPerspective(40.0, (float)w / (float)h, -2, 2);
+	gluLookAt(0, 0, -5, 0, 0, 2, 0, 1, 0);
 	
 	//glOrtho(-7, 7, -7, 7, -7, 7);
 	//glOrtho(-0.5, 0.5, -0.5, 0.5, -0.5, 0.5);
@@ -252,12 +299,12 @@ void nacrtajIvicu(Ivica *i) {
 
 }
 
-void crtajMash() {
+void crtajMesh() {
 	int br = 0;
 	for (int i = 0; i < mesh->lica.size(); i++) {
 		Ivica *iv = mesh->lica[i]->e;
 		glColor3f(mesh->lica[i]->r, mesh->lica[i]->g, mesh->lica[i]->b);
-		
+
 		glBegin(GL_TRIANGLES);
 		glNormal3fv(mesh->lica[i]->vektorNormale);
 
@@ -503,7 +550,7 @@ void subdivizija(int brojIteracija) {
 	}
 }
 
-bool rotiraj = true;
+bool rotiraj = false;
 int rot = 0;
 
 void update(int value) {
@@ -581,12 +628,13 @@ void display() {
 	glLoadIdentity();
 
 	glRotated(rot, 0, 1, 0);
+	glRotated(30, 1, 0, 0);
 
 	float temeA[3] = { -6.0, -6.0, 0.0 };
 	float temeB[3] = { -2.0, 0.0 , 0.0 };
 	float temeC[3] = { 2.0 , -6.0 , 0.0 };
 
-	crtajMash();
+	crtajMesh();
 
 	//glutSolidSphere(0.4, 100, 100);
 
@@ -656,7 +704,8 @@ int main(int argc, char** argv)
 	glutMouseFunc(onMouseClick);
 	glutKeyboardFunc(keybordFunc);
 	myInit();
-	subdivizija(4);
+	subdivizija(0);
+	//upisiMesh("testCvorovi.txt", "testIndeksi.txt");
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();
 	return 0;

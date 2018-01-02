@@ -19,9 +19,6 @@
     <Text Include="bunny.txt">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="indeksi.txt">
-      <Filter>Source Files</Filter>
-    </Text>
     <Text Include="tetraedar.txt">
       <Filter>Source Files</Filter>
     </Text>
@@ -40,10 +37,19 @@
     <Text Include="budaIndeksi.txt">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="model.txt">
+    <Text Include="bunnyIndeksi.txt">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="modelIndeksi.txt">
+    <Text Include="svecnjak.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="svecnjakIndeksi.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="torus.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="torusIndeksi.txt">
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
