@@ -43,7 +43,6 @@ void Cvor::izracunajSumuSusednihCvorova() {
 		sumaz += i->sled->v->z;
 		i = i->preth->eSym;
 		brojSusednihCvorova++;
-		cout << "izracunajSumuSusednihCvorova" << endl;
 		//if (j > 6) break;
 	} while (i != this->e && i != NULL); //Probaj da napravis da i nikad ne bude null
 }

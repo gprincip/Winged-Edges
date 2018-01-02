@@ -39,9 +39,11 @@ int brojIvica(Lice *l) {
 }
 
 void podesiSimetricneIvice() {
-
+	int b = 0;
+	int brIvica = mesh->ivice.size();
 	for (int i = 0; i < mesh->ivice.size(); i++) {
-
+		b++;
+		cout << "Podesavanje simetricnih ivica. Zavrseno " << b << " od " << brIvica << endl;
 		Cvor *c1 = mesh->ivice[i]->v;
 		Cvor *c2 = mesh->ivice[i]->sled->v;
 
@@ -51,6 +53,7 @@ void podesiSimetricneIvice() {
 				mesh->ivice[i]->eSym = mesh->ivice[j];
 			}
 		}
+
 	}
 }
 
@@ -173,7 +176,7 @@ void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 
 static void myInit()
 {
-	ucitajMesh("bunny.txt" , "indeksi.txt");
+	ucitajMesh("model.txt" , "modelIndeksi.txt");
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -186,11 +189,6 @@ static void myInit()
 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat mat_shininess[] = { 50.0 };
 	GLfloat light_position[] = { 0.0, 0.0, 1.5, 1.0 };
-
-	glPushMatrix();
-	glTranslated(0, 0, -1.5);
-	glutSolidSphere(0.2, 5, 5);
-	glPopMatrix();
 
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
@@ -221,8 +219,8 @@ void winReshape(GLint w, GLint h)
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(40.0, (float)w / (float)h, -1, 1);
-	gluLookAt(0, 0, -1.5, 0, 0, 0.5, 0, 1, 0);
+	gluPerspective(40.0, (float)w / (float)h, -2, 2);
+	gluLookAt(0, 0, -3, 0, 0, 0.5, 0, 1, 0);
 	
 	//glOrtho(-7, 7, -7, 7, -7, 7);
 	//glOrtho(-0.5, 0.5, -0.5, 0.5, -0.5, 0.5);
@@ -582,6 +580,16 @@ void display() {
 
 	crtajMash();
 
+	/*Lice *l = mesh->lica[0];
+
+	glBegin(GL_LINES);
+
+	glVertex3f(0, 0, 0);
+	glVertex3fv(l->vektorNormale);
+
+	glEnd();
+*/
+
 	//test();
 	//glutSolidSphere(1, 5, 5);
 
@@ -609,7 +617,6 @@ int main(int argc, char** argv)
 		b[3] = { -2.0, -2.0, 2.0 },
 		c[3] = { 2.0, 2.0, 2.0 },
 		d[3] = { 2.0, -2.0, -2.0 };
-
 
 	//tetraedar(a, b, c, d);
 

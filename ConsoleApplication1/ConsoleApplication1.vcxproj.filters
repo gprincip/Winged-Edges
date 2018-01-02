@@ -34,6 +34,18 @@
     <Text Include="zmajIndeksi.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="buda.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="budaIndeksi.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="model.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="modelIndeksi.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

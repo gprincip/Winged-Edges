@@ -79,8 +79,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="buda.txt" />
+    <Text Include="budaIndeksi.txt" />
     <Text Include="bunny.txt" />
     <Text Include="indeksi.txt" />
+    <Text Include="model.txt" />
+    <Text Include="modelIndeksi.txt" />
     <Text Include="tetraedar.txt" />
     <Text Include="ReadMe.txt" />
     <Text Include="tetraedarIndeksi.txt" />
