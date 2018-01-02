@@ -85,19 +85,14 @@ void Lice::izracunajVektorNormale() {
 	Cvor *c2 = e->sled->v;
 	Cvor *c3 = e->sled->sled->v;
 
-	float srednjaTacka[3]; //[0] - x, [1] - y, [2] - z
-	srednjaTacka[0] = (c1->x + c2->x + c3->x) / 3.0;
-	srednjaTacka[1] = (c1->y + c2->y + c3->y) / 3.0;
-	srednjaTacka[2] = (c1->z + c2->z + c3->z) / 3.0;
+	float n[3]; //[0] - x, [1] - y, [2] - z
+	n[0] = (c2->y - c1->y)*(c3->z - c1->z) - (c2->z - c1->z)*(c3->y - c1->y);
+	n[1] = (c2->z - c1->z)*(c3->x - c1->x) - (c2->x - c1->x)*(c3->z - c1->z);
+	n[2] = (c2->x - c1->x)*(c3->y - c1->y) - (c2->y - c1->y)*(c3->x - c1->x);
 
-	//d1 - udaljenost od (0,0,0) do srednjeTacke lica
-	float d1 = sqrt(pow(0 - srednjaTacka[0], 2) + pow(0 - srednjaTacka[1], 2) + pow(0 - srednjaTacka[2], 2));
+	float smer = n[0] * vektorNormale[0] + n[1] * vektorNormale[1] + n[2] * vektorNormale[2];
 
-	//d2 - udaljenost od vekt. normale do sr. t.
-	float d2 = sqrt(pow(vektorNormale[0] - srednjaTacka[0], 2) + pow(vektorNormale[1] - srednjaTacka[1], 2) + pow(vektorNormale[2] - srednjaTacka[2], 2));
-
-	if (d1 < d2) { //zameni smer ivica
-
+	if (smer < 0) {
 		Ivica *e1 = e;
 		Ivica *e2 = e1->sled;
 		Ivica *e3 = e2->sled;
@@ -110,5 +105,6 @@ void Lice::izracunajVektorNormale() {
 		e2->preth = e2->sled->sled;
 		e3->preth = e3->sled->sled;
 	}
+
 
 }

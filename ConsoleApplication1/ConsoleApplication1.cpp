@@ -44,7 +44,7 @@ void podesiSimetricneIvice() {
 	int brIvica = mesh->ivice.size();
 	for (int i = 0; i < mesh->ivice.size(); i++) {
 		b++;
-		cout << "Podesavanje simetricnih ivica. Zavrseno " << b << " od " << brIvica << endl;
+		if(b % 100 == 0) cout << "Podesavanje simetricnih ivica. Zavrseno " << b << " od " << brIvica << endl;
 		Cvor *c1 = mesh->ivice[i]->v;
 		Cvor *c2 = mesh->ivice[i]->sled->v;
 
@@ -52,6 +52,7 @@ void podesiSimetricneIvice() {
 
 			if (mesh->ivice[j]->v == c2 && mesh->ivice[j]->sled->v == c1) {
 				mesh->ivice[i]->eSym = mesh->ivice[j];
+				break;
 			}
 		}
 
@@ -180,7 +181,6 @@ int indeksCvoraUMeshu(Cvor *c) {
 	for (int i = 0; i < mesh->cvorovi.size(); i++) {
 		if (mesh->cvorovi[i] == c) {
 			return i;
-			break;
 		}
 	}
 	return INT_MAX;
@@ -224,7 +224,7 @@ void upisiMesh(char *imeFajlaCvorovi, char *imeFajlaIndeksi) {
 
 static void myInit()
 {
-	ucitajMesh("testCvorovi.txt" , "testIndeksi.txt");
+	ucitajMesh("torus.txt" , "torusIndeksi.txt");
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -238,7 +238,7 @@ void winReshape(GLint w, GLint h)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(40.0, (float)w / (float)h, -2, 2);
-	gluLookAt(0, 0, -5, 0, 0, 2, 0, 1, 0);
+	gluLookAt(0, 0, -6, 0, 0, 2, 0, 1, 0);
 	
 	//glOrtho(-7, 7, -7, 7, -7, 7);
 	//glOrtho(-0.5, 0.5, -0.5, 0.5, -0.5, 0.5);
@@ -704,7 +704,7 @@ int main(int argc, char** argv)
 	glutMouseFunc(onMouseClick);
 	glutKeyboardFunc(keybordFunc);
 	myInit();
-	subdivizija(0);
+	subdivizija(2);
 	//upisiMesh("testCvorovi.txt", "testIndeksi.txt");
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();
