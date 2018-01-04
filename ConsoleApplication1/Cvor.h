@@ -4,8 +4,7 @@
 class Lice;
 class Ivica;
 
-class Cvor{
-
+class Cvor {
 public:
 	Ivica *e;
 
@@ -17,15 +16,15 @@ public:
 
 	float *vektorNormale; //[0] - x , [1] - y , [2] - z
 
-	Cvor(Ivica *e = NULL){
+	Cvor(Ivica *e = NULL) {
 		this->e = e;
 		vektorNormale = new float[3];
 		vektorNormale[0] = vektorNormale[1] = vektorNormale[2] = 0;
 	}
 
-	Cvor(float x, float y, float z){
+	Cvor(float x, float y, float z) {
 		sumax = sumay = sumaz = 0.0;
-		this->x = x; 
+		this->x = x;
 		this->y = y;
 		this->z = z;
 		brojSusednihCvorova = 0;

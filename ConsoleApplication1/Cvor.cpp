@@ -6,8 +6,6 @@
 
 # define M_PI           3.14159265358979323846
 
-//podeli ivice, apdejtuj cvorove, podeli lica, nadji normale
-
 std::vector<Lice*> Cvor::svaLica(Cvor *c){
 
 	Ivica *temp = c->e;
@@ -37,14 +35,12 @@ void Cvor::izracunajSumuSusednihCvorova() {
 	Ivica *i = this->e;
 	int j = 0;
 	do {
-		j++;
 		sumax += i->sled->v->x;
 		sumay += i->sled->v->y;
 		sumaz += i->sled->v->z;
 		i = i->preth->eSym;
 		brojSusednihCvorova++;
-		if (j > 6) break;
-	} while (i != this->e && i != NULL); //Probaj da napravis da i nikad ne bude null
+	} while (i != this->e && i != NULL);
 }
 
 void Cvor::izracunajVektorNormale() {
@@ -58,14 +54,11 @@ void Cvor::izracunajVektorNormale() {
 	int brLica = 0;
 	int j = 0;
 	do {
-		if (e == NULL) break;
-		j++;
 		sumax += e->l->vektorNormale[0];
 		sumay += e->l->vektorNormale[1];
 		sumaz += e->l->vektorNormale[2];
 		e = e->preth->eSym;
 		brLica++;
-		if (j > 6) break;
 	} while (e != this->e && e != NULL);
 
 	this->vektorNormale[0] = sumax / brLica;

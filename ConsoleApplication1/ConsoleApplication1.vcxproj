@@ -79,10 +79,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="buda.txt" />
-    <Text Include="budaIndeksi.txt" />
     <Text Include="bunny.txt" />
     <Text Include="bunnyIndeksi.txt" />
+    <Text Include="piramida.txt" />
+    <Text Include="piramidaIndeksi.txt" />
+    <Text Include="stopalo.txt" />
+    <Text Include="stopaloIndeksi.txt" />
     <Text Include="svecnjak.txt" />
     <Text Include="svecnjakIndeksi.txt" />
     <Text Include="tetraedar.txt" />

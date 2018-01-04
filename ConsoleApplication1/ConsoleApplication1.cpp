@@ -26,7 +26,10 @@ Mesh *mesh = new Mesh;
 bool rotirajSvetlo = false;
 int rotacijaSvetla = 0.0;
 
-int brojSubdivizija = 3;
+bool rotiraj = false;
+int rot = 0;
+
+int brojSubdivizija = 1; //za f-ju tetraedar
 
 int brojIvica(Lice *l) {
 
@@ -44,7 +47,7 @@ void podesiSimetricneIvice() {
 	int brIvica = mesh->ivice.size();
 	for (int i = 0; i < mesh->ivice.size(); i++) {
 		b++;
-		if(b % 100 == 0) cout << "Podesavanje simetricnih ivica. Zavrseno " << b << " od " << brIvica << endl;
+		if (b % 100 == 0) cout << "Podesavanje simetricnih ivica. Zavrseno " << b << " od " << brIvica << endl;
 		Cvor *c1 = mesh->ivice[i]->v;
 		Cvor *c2 = mesh->ivice[i]->sled->v;
 
@@ -55,7 +58,45 @@ void podesiSimetricneIvice() {
 				break;
 			}
 		}
+	}
+}
 
+void podesiOrjentaciju(Lice *l) {
+
+	//ovo nije sigurno
+	//ako je skalarni prozvod vektora normale trougla i neke tacke na trouglu > 0, onda je normala usmerena ka trouglu
+	//ako je normala usmerena ka trouglu, lice je levo od ivice
+
+	Ivica *i = l->e;
+
+	float skalarniProjzvod = l->vektorNormale[0] * i->v->x + l->vektorNormale[1] * i->v->y + l->vektorNormale[2] * i->v->z;
+
+	if (skalarniProjzvod < 0) {
+
+		Ivica *e1 = l->e;
+		Ivica *e2 = e1->sled;
+		Ivica *e3 = e2->sled;
+
+		e1->sled = e1->preth;
+		e2->sled = e2->preth;
+		e3->sled = e3->preth;
+
+		e1->preth = e1->sled->sled;
+		e2->preth = e2->sled->sled;
+		e3->preth = e3->sled->sled;
+
+		float u[3] = { i->sled->v->x - i->v->x , i->sled->v->y - i->v->y , i->sled->v->z - i->v->z };
+		float v[3] = { i->sled->sled->v->x - i->v->x , i->sled->sled->v->y - i->v->y , i->sled->sled->v->z - i->v->z };
+
+		l->vektorNormale[0] = (u[1] * v[2]) - (u[2] * v[1]);
+		l->vektorNormale[1] = (u[2] * v[0]) - (u[0] * v[2]);
+		l->vektorNormale[2] = (u[0] * v[1]) - (u[1] * v[0]);
+
+		float norma = sqrt(pow(l->vektorNormale[0], 2) + pow(l->vektorNormale[1], 2) + pow(l->vektorNormale[2], 2));
+
+		l->vektorNormale[0] /= norma;
+		l->vektorNormale[1] /= norma;
+		l->vektorNormale[2] /= norma;
 	}
 }
 
@@ -109,7 +150,7 @@ void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 
 			int i = 2;
 			string ind1, ind2, ind3;
-			
+
 			//ucitavanje prvog indeksa
 			while (true) {
 				if (linija[i] == ' ') break;
@@ -163,9 +204,10 @@ void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 		cout << "Greska pri otvaranju fajla" << endl;
 	}
 
-	//podesi normale i proveri da li svaka ivica pamti lice sa leve strane, da bi mogle da se podese sim. ivice
+	//podesi normale i proveri da li svaka ivica pamti lice sa leve strane
 	for (int i = 0; i < mesh->lica.size(); i++) {
 		mesh->lica[i]->izracunajVektorNormale();
+		//podesiOrjentaciju(mesh->lica[i]);
 	}
 
 	for (int i = 0; i < mesh->cvorovi.size(); i++) {
@@ -192,7 +234,7 @@ void upisiMesh(char *imeFajlaCvorovi, char *imeFajlaIndeksi) {
 	cvorovi.open(imeFajlaCvorovi);
 
 	for (int i = 0; i < mesh->cvorovi.size(); i++) {
-		cvorovi << mesh->cvorovi[i]->x << " "<<mesh->cvorovi[i]->y << " " << mesh->cvorovi[i]->z << " ";
+		cvorovi << mesh->cvorovi[i]->x << " " << mesh->cvorovi[i]->y << " " << mesh->cvorovi[i]->z << " ";
 		if (i != mesh->cvorovi.size() - 1) cvorovi << endl;
 	}
 
@@ -208,15 +250,15 @@ void upisiMesh(char *imeFajlaCvorovi, char *imeFajlaIndeksi) {
 
 		do {
 			int ind = indeksCvoraUMeshu(e->v);
-			if(ind != INT_MAX) indeksi<< ind << " ";
-			else { 
+			if (ind != INT_MAX) indeksi << ind << " ";
+			else {
 				cout << "Greska prilikom upisivanja u mesh" << endl;
 				return;
 			}
 			e = e->sled;
 		} while (e != mesh->lica[i]->e);
 
-		if (i != mesh->lica.size()-1) indeksi << endl;
+		if (i != mesh->lica.size() - 1) indeksi << endl;
 	}
 
 	indeksi.close();
@@ -224,12 +266,11 @@ void upisiMesh(char *imeFajlaCvorovi, char *imeFajlaIndeksi) {
 
 static void myInit()
 {
-	ucitajMesh("torus.txt" , "torusIndeksi.txt");
+	ucitajMesh("svecnjak.txt", "svecnjakIndeksi.txt");
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void winReshape(GLint w, GLint h)
@@ -237,11 +278,22 @@ void winReshape(GLint w, GLint h)
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(40.0, (float)w / (float)h, -2, 2);
-	gluLookAt(0, 0, -6, 0, 0, 2, 0, 1, 0);
-	
+
+	/*gluPerspective(40.0, (float)w / (float)h, 2.0, -2.0); //torus, piramida
+	gluLookAt(0, 0, 4, 0, 0, -2, 0, 1, 0);*/
+
+	/*gluPerspective(40.0, (float)w / (float)h, 2.0, -2.0); //tetraedar, treba da se odkomentarise podesiOrjentaciju
+	gluLookAt(0, 0, 10, 0, 0, -2, 0, 1, 0);*/
+
+	gluPerspective(40.0, (float)w / (float)h, 0.7, -0.7); //svecnjak, zmaj
+	gluLookAt(0, 0, 1, 0, 0, -2, 0, 1, 0);
+
+	/*gluPerspective(40.0, (float)w / (float)h, 35.0, -35.0); //stopalo
+	gluLookAt(0, 0, 40, 0, 0, -2, 0, 1, 0);*/
+
 	//glOrtho(-7, 7, -7, 7, -7, 7);
 	//glOrtho(-0.5, 0.5, -0.5, 0.5, -0.5, 0.5);
+
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -282,7 +334,6 @@ void podesiKoordinateCvora(Cvor *c) {
 
 		c->z += levo->z * 0.5;
 		c->z += desno->z * 0.5;
-
 	}
 }
 
@@ -296,7 +347,6 @@ void nacrtajIvicu(Ivica *i) {
 	glVertex3f(i->sled->v->x, i->sled->v->y, i->sled->v->z);
 
 	glEnd();
-
 }
 
 void crtajMesh() {
@@ -436,7 +486,7 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 
 		//zapamti podatke pre subdivizije
 		vector<Ivica*> ivice = mesh->ivice;
-		vector<Cvor*> cvorovi = mesh->cvorovi; 
+		vector<Cvor*> cvorovi = mesh->cvorovi;
 		vector<Lice*> lica = mesh->lica;
 
 		//podeli ivice
@@ -481,10 +531,7 @@ void tetraedar(float *temeA, float *temeB, float *temeC, float *temeD) {
 		for (int i = 0; i < mesh->ivice.size(); i++) {
 			mesh->ivice[i]->podeljena = false;
 		}
-
-
 	}
-
 }
 
 void subdivizija(int brojIteracija) {
@@ -507,7 +554,7 @@ void subdivizija(int brojIteracija) {
 		for (int i = 0; i < ivice.size(); i++) {
 			if (!ivice[i]->podeljena) {
 				ivice[i]->podeljena = true;
-				if(ivice[i]->eSym != NULL) ivice[i]->eSym->podeljena = true;
+				if (ivice[i]->eSym != NULL) ivice[i]->eSym->podeljena = true;
 				ivice[i]->deli();
 			}
 		}
@@ -545,54 +592,25 @@ void subdivizija(int brojIteracija) {
 		for (int i = 0; i < mesh->ivice.size(); i++) {
 			mesh->ivice[i]->podeljena = false;
 		}
-
-
 	}
 }
 
-bool rotiraj = false;
-int rot = 0;
 
 void update(int value) {
 
 	if (rotiraj) rot = (rot + 1) % 360;
-	
 
-	if(rotirajSvetlo) rotacijaSvetla = (rotacijaSvetla + 2) % 360;
+	if (rotirajSvetlo) rotacijaSvetla = (rotacijaSvetla + 2) % 360;
 
 	glutPostRedisplay();
 	glutTimerFunc(25, update, 0);
-
-}
-
-
-void test() {
-
-	Cvor *c1 = mesh->ivice[0]->v;
-	Cvor *c2 = mesh->ivice[0]->sled->v;
-	Cvor *c3 = mesh->ivice[0]->sled->sled->v;
-
-	glColor3f(1, 0, 0);
-	glLineWidth(5);
-
-	Lice *l = mesh->lica[0];
-
-	Ivica *i = l->e;
-
-	nacrtajIvicu(i);
-	nacrtajIvicu(i->sled);
-	//nacrtajIvicu(i->sled->sled);
-	//nacrtajIvicu(i->sled->sled->sled);
-
-	glEnd();
-
 }
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	glLoadIdentity();
-	
+
 	glRotated(rotacijaSvetla, 1, 0, 0);
 
 	glEnable(GL_LIGHTING);
@@ -636,22 +654,6 @@ void display() {
 
 	crtajMesh();
 
-	//glutSolidSphere(0.4, 100, 100);
-
-	/*Lice *l = mesh->lica[0];
-
-	glBegin(GL_LINES);
-
-	glVertex3f(0, 0, 0);
-	glVertex3fv(l->vektorNormale);
-
-	glEnd();
-*/
-
-	//test();
-	//glutSolidSphere(1, 5, 5);
-
-
 	glFlush();
 }
 
@@ -667,7 +669,7 @@ void onMouseClick(int button, int state, int x, int y) {
 void keybordFunc(unsigned char key, int x, int y) {
 
 	if (key == 's') {
-		if(rotirajSvetlo) rotirajSvetlo = false;
+		if (rotirajSvetlo) rotirajSvetlo = false;
 		else rotirajSvetlo = true;
 	}
 
@@ -688,23 +690,13 @@ int main(int argc, char** argv)
 
 	//tetraedar(a, b, c, d);
 
-	//duzine ivica
-	
-	/*
-	for (int i = 0; i < mash->ivice.size(); i++) {
-
-		cout << sqrt(pow(mash->ivice[i]->v->x - mash->ivice[i]->sled->v->x, 2) + pow(mash->ivice[i]->v->y - mash->ivice[i]->sled->v->y, 2) + pow(mash->ivice[i]->v->z - mash->ivice[i]->sled->v->z, 2)) << endl;
-
-	}
-	*/
-
 	glutDisplayFunc(display);
 	glutReshapeFunc(winReshape);
 	glutTimerFunc(100, update, 0);
 	glutMouseFunc(onMouseClick);
 	glutKeyboardFunc(keybordFunc);
 	myInit();
-	subdivizija(2);
+	subdivizija(0);
 	//upisiMesh("testCvorovi.txt", "testIndeksi.txt");
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();

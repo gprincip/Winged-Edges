@@ -59,10 +59,9 @@ public:
 			c->e = en;
 			this->sled = en;
 			en->sled->preth = en;
-			
+
 			mesh->noviCvorovi.push_back(c);
 			mesh->cvorovi.push_back(c);
-
 
 		}
 	}

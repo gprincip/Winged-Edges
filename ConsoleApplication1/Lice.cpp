@@ -78,33 +78,4 @@ void Lice::izracunajVektorNormale() {
 	vektorNormale[0] /= norma;
 	vektorNormale[1] /= norma;
 	vektorNormale[2] /= norma;
-
-	//provera da li svaka ivica pamti lice sa leve strane
-
-	Cvor *c1 = e->v;
-	Cvor *c2 = e->sled->v;
-	Cvor *c3 = e->sled->sled->v;
-
-	float n[3]; //[0] - x, [1] - y, [2] - z
-	n[0] = (c2->y - c1->y)*(c3->z - c1->z) - (c2->z - c1->z)*(c3->y - c1->y);
-	n[1] = (c2->z - c1->z)*(c3->x - c1->x) - (c2->x - c1->x)*(c3->z - c1->z);
-	n[2] = (c2->x - c1->x)*(c3->y - c1->y) - (c2->y - c1->y)*(c3->x - c1->x);
-
-	float smer = n[0] * vektorNormale[0] + n[1] * vektorNormale[1] + n[2] * vektorNormale[2];
-
-	if (smer < 0) {
-		Ivica *e1 = e;
-		Ivica *e2 = e1->sled;
-		Ivica *e3 = e2->sled;
-
-		e1->sled = e1->preth;
-		e2->sled = e2->preth;
-		e3->sled = e3->preth;
-
-		e1->preth = e1->sled->sled;
-		e2->preth = e2->sled->sled;
-		e3->preth = e3->sled->sled;
-	}
-
-
 }
