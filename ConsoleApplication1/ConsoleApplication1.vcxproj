@@ -81,6 +81,8 @@
   <ItemGroup>
     <Text Include="bunny.txt" />
     <Text Include="bunnyIndeksi.txt" />
+    <Text Include="motorObj.txt" />
+    <Text Include="motorObjIndeksi.txt" />
     <Text Include="piramida.txt" />
     <Text Include="piramidaIndeksi.txt" />
     <Text Include="stopalo.txt" />

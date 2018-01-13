@@ -58,6 +58,12 @@
     <Text Include="piramidaIndeksi.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="motorObj.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="motorObjIndeksi.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

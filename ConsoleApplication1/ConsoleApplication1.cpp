@@ -100,6 +100,138 @@ void podesiOrjentaciju(Lice *l) {
 	}
 }
 
+void ucitajObj(const char *triangleMeshImeFajla, const char *indeksiImeFajla) {
+
+	ifstream triangleMeshStream;
+	triangleMeshStream.open(triangleMeshImeFajla);
+	string linija;
+
+	if (triangleMeshStream.is_open()) {
+		while (getline(triangleMeshStream, linija)) {
+
+			int i = 2;
+			string x, y, z;
+			x = y = z = "";
+
+			//ucitavanje iksa
+			while (true) {
+				if (linija[i] == ' ') break;
+				x += linija[i++];
+			}
+			i++;
+			//uvitavanje ipsilona
+			while (true) {
+				if (linija[i] == ' ') break;
+				y += linija[i++];
+
+			}
+			i++;
+			//ucitavanje zeda
+			while (true) {
+				//if (linija[i] == ' ') break;
+				if (i == linija.length()) break;
+				z += linija[i++];
+			}
+
+			mesh->cvorovi.push_back(new Cvor(stof(x), stof(y), stof(z)));
+
+		}
+		triangleMeshStream.close();
+	}
+	else {
+		cout << "Greska pri otvaranju fajla" << endl;
+	}
+
+	ifstream indeksi;
+	indeksi.open(indeksiImeFajla);
+
+	if (indeksi.is_open()) {
+		while (getline(indeksi, linija)) {
+
+
+			int i = 2;
+			string ind1, ind2, ind3;
+
+			//ucitavanje prvog indeksa
+			while (true) {
+				if (linija[i] == '/') break;
+				ind1 += linija[i++];
+			}
+			i++;
+
+			while (true) {
+				if (linija[i++] == ' ') break;
+			}
+			
+			//*******************************************
+
+			//ucitavanje drugog indeksa
+			while (true) {
+				if (linija[i] == '/') break;
+				ind2 += linija[i++];
+			}
+			i++;
+
+			while (true) {
+				if (linija[i++] == ' ') break;
+			}
+		
+
+			//*******************************************
+
+			//ucitavanje treceg indeksa
+			while (true) {
+				if (linija[i] == '/') break;
+				ind3 += linija[i++];
+			}
+
+			Cvor *c1 = mesh->cvorovi[stoi(ind1)-1];
+			Cvor *c2 = mesh->cvorovi[stoi(ind2)-1];
+			Cvor *c3 = mesh->cvorovi[stoi(ind3)-1];
+
+			Ivica *e1 = new Ivica(c1, NULL, NULL, NULL, NULL, mesh);
+			Ivica *e2 = new Ivica(c2, NULL, NULL, e1, NULL, mesh);
+			Ivica *e3 = new Ivica(c3, NULL, NULL, e2, e1, mesh);
+			c1->e = e1;
+			c2->e = e2;
+			c3->e = e3;
+
+			mesh->ivice.push_back(e1);
+			mesh->ivice.push_back(e2);
+			mesh->ivice.push_back(e3);
+
+			e1->sled = e2;
+			e1->preth = e3;
+
+			e2->sled = e3;
+
+			Lice *l = new Lice(e1, mesh);
+			mesh->lica.push_back(l);
+			e1->l = l;
+			e2->l = l;
+			e3->l = l;
+
+		}
+		indeksi.close();
+	}
+	else {
+		cout << "Greska pri otvaranju indeksa" << endl;
+	}
+
+	//podesi normale i proveri da li svaka ivica pamti lice sa leve strane
+	for (int i = 0; i < mesh->lica.size(); i++) {
+		mesh->lica[i]->izracunajVektorNormale();
+		//podesiOrjentaciju(mesh->lica[i]);
+	}
+
+	for (int i = 0; i < mesh->cvorovi.size(); i++) {
+		mesh->cvorovi[i]->izracunajVektorNormale();
+	}
+
+	podesiSimetricneIvice();
+
+}
+
 void ucitajMesh(const char* triangleMeshImeFajla, const char* indeksiImeFajla) {
 
 	ifstream triangleMeshStream;
@@ -228,7 +360,43 @@ int indeksCvoraUMeshu(Cvor *c) {
 	return INT_MAX;
 }
 
-void upisiMesh(char *imeFajlaCvorovi, char *imeFajlaIndeksi) {
+void upisiObj(const char *imeFajlaCvorovi, const char *imeFajlaIndeksi) {
+	ofstream cvorovi;
+	cvorovi.open(imeFajlaCvorovi);
+
+	for (int i = 0; i < mesh->cvorovi.size(); i++) {
+		cvorovi <<"v "<< mesh->cvorovi[i]->x << " " << mesh->cvorovi[i]->y << " " << mesh->cvorovi[i]->z << " ";
+		if (i != mesh->cvorovi.size() - 1) cvorovi << endl;
+	}
+
+	cvorovi.close();
+
+	ofstream indeksi;
+	indeksi.open(imeFajlaIndeksi);
+
+	for (int i = 0; i < mesh->lica.size(); i++) {
+		indeksi << "f ";
+
+		Ivica *e = mesh->lica[i]->e;
+
+		do {
+			int ind = indeksCvoraUMeshu(e->v);
+			if (ind != INT_MAX) indeksi<< ind+1 << "/0/0"<< " ";
+			else {
+				cout << "Greska prilikom upisivanja u mesh" << endl;
+				return;
+			}
+			e = e->sled;
+		} while (e != mesh->lica[i]->e);
+
+		if (i != mesh->lica.size() - 1) indeksi << endl;
+	}
+
+	indeksi.close();
+
+}
+
+void upisiMesh(const char *imeFajlaCvorovi, const char *imeFajlaIndeksi) {
 
 	ofstream cvorovi;
 	cvorovi.open(imeFajlaCvorovi);
@@ -266,7 +434,9 @@ void upisiMesh(char *imeFajlaCvorovi, char *imeFajlaIndeksi) {
 
 static void myInit()
 {
-	ucitajMesh("svecnjak.txt", "svecnjakIndeksi.txt");
+	//ucitajMesh("torus.txt", "torusIndeksi.txt");
+	ucitajObj("motorObj.txt", "motorObjIndeksi.txt");
+
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -285,11 +455,14 @@ void winReshape(GLint w, GLint h)
 	/*gluPerspective(40.0, (float)w / (float)h, 2.0, -2.0); //tetraedar, treba da se odkomentarise podesiOrjentaciju
 	gluLookAt(0, 0, 10, 0, 0, -2, 0, 1, 0);*/
 
-	gluPerspective(40.0, (float)w / (float)h, 0.7, -0.7); //svecnjak, zmaj
-	gluLookAt(0, 0, 1, 0, 0, -2, 0, 1, 0);
+	/*gluPerspective(40.0, (float)w / (float)h, 0.7, -0.7); //svecnjak, zmaj
+	gluLookAt(0, 0, 1, 0, 0, -2, 0, 1, 0);*/
 
 	/*gluPerspective(40.0, (float)w / (float)h, 35.0, -35.0); //stopalo
 	gluLookAt(0, 0, 40, 0, 0, -2, 0, 1, 0);*/
+
+	gluPerspective(40.0, (float)w / (float)h, 130.0, -130.0); // motor
+	gluLookAt(0, 0, 400, 0, 0, -2, 0, 1, 0);
 
 	//glOrtho(-7, 7, -7, 7, -7, 7);
 	//glOrtho(-0.5, 0.5, -0.5, 0.5, -0.5, 0.5);
@@ -619,7 +792,7 @@ void display() {
 
 	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat mat_shininess[] = { 50.0 };
-	GLfloat light_position[] = { 0.0, 0.0, 4.0, 1.0 };
+	GLfloat light_position[] = { 0.0, 0.0, 150.0, 1.0 };
 
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
@@ -628,7 +801,7 @@ void display() {
 	GLfloat light1_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat light1_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat light1_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light1_position[] = { 0.0, 0.0, -4.0, 1.0 };
+	GLfloat light1_position[] = { 0.0, 0.0, -150.0, 1.0 };
 	GLfloat spot_direction[] = { 0.0, 0.0, 0.0 };
 
 	glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
@@ -672,7 +845,6 @@ void keybordFunc(unsigned char key, int x, int y) {
 		if (rotirajSvetlo) rotirajSvetlo = false;
 		else rotirajSvetlo = true;
 	}
-
 }
 
 int main(int argc, char** argv)
@@ -696,8 +868,9 @@ int main(int argc, char** argv)
 	glutMouseFunc(onMouseClick);
 	glutKeyboardFunc(keybordFunc);
 	myInit();
-	subdivizija(0);
+	subdivizija(1);
 	//upisiMesh("testCvorovi.txt", "testIndeksi.txt");
+	//upisiObj("objCvorovi.txt", "objIndeksi.txt");
 	glEnable(GL_DEPTH_TEST);                                    // enable Hidden Surface Removal Algorithm
 	glutMainLoop();
 	return 0;

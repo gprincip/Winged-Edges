@@ -54,6 +54,7 @@ void Cvor::izracunajVektorNormale() {
 	int brLica = 0;
 	int j = 0;
 	do {
+		if (e == NULL) break;
 		sumax += e->l->vektorNormale[0];
 		sumay += e->l->vektorNormale[1];
 		sumaz += e->l->vektorNormale[2];
